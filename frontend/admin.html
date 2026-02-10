@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGF - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+            --bg-color: #F3F4F6;
+            --text-primary: #1F2937;
+            --shadow-soft: 0 10px 40px -10px rgba(0,0,0,0.08);
+            --radius-lg: 16px;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            padding-bottom: 40px;
+        }
+
+        /* Navbar Glass */
+        .navbar-glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+        }
+
+        /* Cards do Dashboard */
+        .stat-card {
+            background: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-soft);
+            transition: transform 0.2s;
+            height: 100%;
+        }
+        .stat-card:hover { transform: translateY(-4px); }
+        
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+        }
+        .stat-value { font-size: 2rem; font-weight: 700; color: var(--text-primary); }
+        .stat-label { color: #6B7280; font-size: 0.875rem; font-weight: 500; }
+
+        /* Tabela Premium */
+        .table-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            border: none;
+            overflow: hidden;
+        }
+        .table thead th {
+            background-color: #F9FAFB;
+            color: #6B7280;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            padding: 16px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        .table tbody td {
+            padding: 16px;
+            vertical-align: middle;
+            border-bottom: 1px solid #F3F4F6;
+        }
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .btn-action:hover { transform: scale(1.1); }
+    </style>
+    <script>
+        // Auth & Role Guard
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/login.html';
+        } else {
+            try {
+                // Decode JWT Payload (part 2 of token)
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                if (payload.role !== 'admin' && payload.role !== 'manager') {
+                    alert('Acesso Negado: Apenas administradores.');
+                    window.location.href = '/index.html';
+                }
+            } catch (e) {
+                console.error("Token inválido");
+                localStorage.removeItem('token');
+                window.location.href = '/login.html';
+            }
+        }
+    </script>
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-glass fixed-top mb-4">
+    <div class="container-fluid py-2">
+        <span class="navbar-brand mb-0 h1 text-primary fw-bold">
+            <i class="bi bi-shield-lock me-2"></i>SIGF Admin
+        </span>
+        <a href="/" class="btn btn-light btn-sm rounded-pill text-secondary border">
+            <i class="bi bi-arrow-left me-1"></i> Voltar ao App
+        </a>
+    </div>
+</nav>
+<div style="height: 80px;"></div>
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h2 class="fw-bold mb-1">Visão Geral</h2>
+            <p class="text-muted mb-0">Gerencie checklists e manutenção da frota</p>
+        </div>
+        <button onclick="downloadExcel()" class="btn btn-success rounded-pill px-4 shadow-sm">
+            <i class="bi bi-file-earmark-excel me-2"></i>Exportar Excel
+        </button>
+    </div>
+
+    <!-- Dashboard Cards Modernos -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                    <i class="bi bi-send"></i>
+                </div>
+                <div class="stat-value" id="totalCount">0</div>
+                <div class="stat-label">Total de Envios</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                    <i class="bi bi-cloud-upload"></i>
+                </div>
+                <div class="stat-value" id="pendingCount">0</div>
+                <div class="stat-label">Pendente Sincronização</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon bg-danger bg-opacity-10 text-danger">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </div>
+                <div class="stat-value" id="issueCount">0</div>
+                <div class="stat-label">Alertas de Pneus</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-card">
+        <div class="p-4 border-bottom">
+            <h5 class="fw-bold mb-0">Registros Recentes</h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tipo Checklist</th>
+                        <th>Data Envio</th>
+                        <th>Status Sync</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- Data loaded via JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Registro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <input type="hidden" id="editId">
+                    <div class="mb-3">
+                        <label class="form-label">JSON Dados</label>
+                        <textarea class="form-control" id="editData" rows="10"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="saveEdit()">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function loadData() {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch('/api/checklists', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.status === 401) window.location.href = '/login.html';
+
+            const data = await res.json();
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+            
+            let pending = 0;
+            let issues = 0;
+
+            data.forEach(item => {
+                if (!item.synced) pending++;
+                // Simple issue detection logic for demo (check if 'pneus' field exists and is NOT OK)
+                if (item.data && item.data.pneus && item.data.pneus !== 'OK') issues++;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="fw-medium text-secondary">#${item.id}</td>
+                    <td>
+                        <span class="badge bg-light text-dark border fw-normal px-3 py-2 rounded-pill">
+                            ${item.checklist_id}
+                        </span>
+                    </td>
+                    <td class="text-secondary small">${new Date(item.created_at).toLocaleString()}</td>
+                    <td>
+                        ${item.synced 
+                            ? '<span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2"><i class="bi bi-check-circle me-1"></i>Sincronizado</span>' 
+                            : '<span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-3 py-2"><i class="bi bi-clock me-1"></i>Pendente</span>'}
+                    </td>
+                    <td class="text-end">
+                        <button class="btn btn-action text-primary bg-primary bg-opacity-10 me-2" onclick='openEdit(${JSON.stringify(item)})' title="Editar">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-action text-danger bg-danger bg-opacity-10" onclick="deleteItem(${item.id})" title="Excluir">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Update Dashboard Counters
+            document.getElementById('totalCount').innerText = data.length;
+            document.getElementById('pendingCount').innerText = pending;
+            document.getElementById('issueCount').innerText = issues;
+
+        } catch (e) {
+            console.error(e);
+            alert("Erro ao carregar dados.");
+        }
+    }
+
+    function openEdit(item) {
+        document.getElementById('editId').value = item.id;
+        document.getElementById('editData').value = JSON.stringify(item.data, null, 4);
+        new bootstrap.Modal(document.getElementById('editModal')).show();
+    }
+
+    async function saveEdit() {
+        const id = document.getElementById('editId').value;
+        try {
+            const parsedData = JSON.parse(document.getElementById('editData').value);
+            // We need to fetch original item to get checklist_id (simplified here)
+            // Ideally backend update should accept partial data or we pass checklist_id in modal
+            // For now assuming checklist_id doesn't change or fetching it
+            
+            // Re-fetch to get checklist_id since we didn't store it in hidden field
+            // A better way is to pass it. Let's assume we send back the same checklist_id
+            // For MVP simplicity, we trust the user didn't break the structure or we just update 'data'
+            
+            // To fix: let's get checklist_id from table or store it in openEdit
+            // Quick fix: pass checklist_id in openEdit
+            
+            const payload = {
+                checklist_id: "CHK-VL-001", // Placeholder, needs real ID from item
+                data: parsedData
+            };
+            
+            // Correction: let's store checklist_id in a global var or hidden input
+            // But wait, the backend endpoint expects checklist_id in the body.
+            // Let's reload page logic to include it properly.
+        } catch (e) {
+            alert("JSON Inválido");
+            return;
+        }
+    }
+    
+    // Improved saveEdit with proper ID handling
+    let currentEditItem = null;
+    const oldOpenEdit = openEdit;
+    openEdit = function(item) {
+        currentEditItem = item;
+        document.getElementById('editId').value = item.id;
+        document.getElementById('editData').value = JSON.stringify(item.data, null, 4);
+        new bootstrap.Modal(document.getElementById('editModal')).show();
+    }
+
+    saveEdit = async function() {
+        if (!currentEditItem) return;
+        try {
+            const parsedData = JSON.parse(document.getElementById('editData').value);
+            const token = localStorage.getItem('token');
+            const res = await fetch(`/api/checklists/${currentEditItem.id}`, {
+                method: 'PUT',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    checklist_id: currentEditItem.checklist_id,
+                    data: parsedData
+                })
+            });
+            
+            if (res.ok) {
+                location.reload();
+            } else {
+                alert("Erro ao salvar");
+            }
+        } catch (e) {
+            alert("JSON Inválido ou Erro de Rede");
+        }
+    }
+
+    async function deleteItem(id) {
+        if (!confirm("Tem certeza que deseja excluir?")) return;
+        
+        const token = localStorage.getItem('token');
+        const res = await fetch(`/api/checklists/${id}`, { 
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) loadData();
+        else alert("Erro ao excluir");
+    }
+
+    async function downloadExcel() {
+        const token = localStorage.getItem('token');
+        const res = await fetch('/api/export/excel', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (res.status === 403) {
+            alert("Acesso Negado: Apenas para Gestores ou Financeiro.");
+            return;
+        }
+        
+        if (res.ok) {
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "relatorio_frota.xlsx";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        } else {
+            alert("Erro ao baixar relatório.");
+        }
+    }
+
+    loadData();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
