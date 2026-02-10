@@ -1,0 +1,60 @@
+/* Navbar Styles */
+.navbar {
+    padding: 1rem 0; /* Mais espaçamento vertical */
+    transition: all 0.3s ease;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 800; /* Mais bold */
+    letter-spacing: 1px;
+    color: #fff !important;
+}
+
+.nav-link {
+    position: relative;
+    transition: color 0.3s ease;
+    margin: 0 10px; /* Mais espaçamento entre links */
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7) !important; /* Cor base mais suave */
+}
+
+/* Efeito Neon e Underline para link ativo/hover */
+.nav-link.active, .nav-link:hover {
+    color: var(--primary-color) !important;
+    text-shadow: 0 0 10px rgba(0, 210, 255, 0.4);
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0px; 
+    left: 50%;
+    background-color: var(--primary-color);
+    transition: all 0.3s ease;
+    box-shadow: 0 0 8px var(--primary-color);
+    transform: translateX(-50%);
+}
+
+.nav-link.active::after, .nav-link:hover::after {
+    width: 100%;
+}
+
+/* Botão Orçamento na Navbar */
+.navbar .btn-outline-primary {
+    border-width: 2px;
+    font-weight: 700;
+    padding: 0.5rem 1.2rem;
+}
+
+/* Mobile Toggler */
+.navbar-toggler {
+    border: none;
+    outline: none;
+}
+
+.navbar-toggler:focus {
+    box-shadow: none;
+}

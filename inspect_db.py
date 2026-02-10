@@ -1,47 +1,56 @@
 import sqlite3
-import json
 import os
 
-# Caminho para o banco de dados
-DB_PATH = os.path.join("data", "sigf_local.db")
+# Caminho do banco de dados
+db_path = os.path.join('instance', 'dev.db')
 
 def inspect_db():
-    if not os.path.exists(DB_PATH):
-        print(f"Erro: Banco de dados não encontrado em {DB_PATH}")
+    if not os.path.exists(db_path):
+        print(f"❌ Erro: Banco de dados não encontrado em {db_path}")
         return
 
-    conn = sqlite3.connect(DB_PATH)
+    print(f"🔍 Inspecionando Banco de Dados: {db_path}\n")
+    
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
-    try:
-        # Listar todas as tabelas
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-        tables = cursor.fetchall()
-        print("\n=== TABELAS ENCONTRADAS ===")
-        for table in tables:
-            print(f"- {table[0]}")
+    # Listar todas as tabelas
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = cursor.fetchall()
 
-        # Ler dados da tabela checklist_responses
-        print("\n=== DADOS SALVOS (checklist_responses) ===")
-        cursor.execute("SELECT * FROM checklist_responses")
+    if not tables:
+        print("O banco de dados está vazio (nenhuma tabela encontrada).")
+        return
+
+    for table_name in tables:
+        table = table_name[0]
+        # Ignorar tabelas internas do SQLite ou do Alembic (migrações) se houver
+        if table in ['sqlite_sequence', 'alembic_version']: 
+            continue 
+
+        print(f"{'='*40}")
+        print(f"📋 Tabela: {table}")
+        print(f"{'='*40}")
+        
+        # Obter nomes das colunas
+        cursor.execute(f"PRAGMA table_info({table})")
+        columns = [col[1] for col in cursor.fetchall()]
+        print(f"Colunas: { ' | '.join(columns) }")
+        print("-" * 40)
+
+        # Obter dados
+        cursor.execute(f"SELECT * FROM {table}")
         rows = cursor.fetchall()
-
+        
         if not rows:
-            print("Nenhum registro encontrado.")
+            print("  (Tabela vazia)")
         else:
             for row in rows:
-                id, checklist_id, data, created_at, synced = row
-                print(f"ID: {id}")
-                print(f"Tipo: {checklist_id}")
-                print(f"Data Criação: {created_at}")
-                print(f"Sincronizado: {'Sim' if synced else 'Não'}")
-                print(f"Conteúdo: {json.loads(data) if isinstance(data, str) else data}") # Tenta formatar JSON
-                print("-" * 30)
+                # Converter cada item para string para facilitar visualização
+                print(f"  {row}")
+        print("\n")
 
-    except sqlite3.Error as e:
-        print(f"Erro ao ler banco: {e}")
-    finally:
-        conn.close()
+    conn.close()
 
 if __name__ == "__main__":
     inspect_db()

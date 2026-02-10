@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <a href="{{ url_for('real_estate.index') }}" class="btn btn-outline-light mb-4"><i class="fas fa-arrow-left me-2"></i>Voltar para Imóveis</a>
+    
+    <div class="row">
+        <!-- Detalhes do Imóvel -->
+        <div class="col-lg-8">
+            <!-- Carousel -->
+            <div id="imovelCarousel" class="carousel slide mb-4 border border-secondary rounded overflow-hidden shadow-lg" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    {% for imagem in imovel.imagens %}
+                    <button type="button" data-bs-target="#imovelCarousel" data-bs-slide-to="{{ loop.index0 }}" {% if loop.first %}class="active"{% endif %}></button>
+                    {% endfor %}
+                </div>
+                <div class="carousel-inner">
+                    {% for imagem in imovel.imagens %}
+                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                        <img src="{{ imagem.url }}" class="d-block w-100" alt="{{ imagem.descricao }}" style="height: 500px; object-fit: cover;">
+                        <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-75 rounded p-2">
+                            <h5 class="mb-0">{{ imagem.descricao }}</h5>
+                        </div>
+                    </div>
+                    {% else %}
+                    <!-- Fallback se não houver imagens extras -->
+                    <div class="carousel-item active">
+                        <img src="{{ imovel.imagem_url }}" class="d-block w-100" alt="{{ imovel.titulo }}" style="height: 500px; object-fit: cover;">
+                    </div>
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#imovelCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#imovelCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Próximo</span>
+                </button>
+            </div>
+
+            <div class="card bg-dark border-secondary mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h2 class="text-light mb-1">{{ imovel.titulo }}</h2>
+                            <p class="text-muted"><i class="fas fa-map-marker-alt me-2"></i>{{ imovel.endereco }}</p>
+                        </div>
+                        <h3 class="text-success fw-bold">R$ {{ "{:,.2f}".format(imovel.preco) }}</h3>
+                    </div>
+                    
+                    <div class="row text-center mb-4 py-3 border-top border-bottom border-secondary">
+                        <div class="col border-end border-secondary">
+                            <span class="d-block text-muted small">Área</span>
+                            <span class="fs-5 text-light fw-bold">{{ imovel.area }}m²</span>
+                        </div>
+                        <div class="col border-end border-secondary">
+                            <span class="d-block text-muted small">Quartos</span>
+                            <span class="fs-5 text-light fw-bold">{{ imovel.quartos }}</span>
+                        </div>
+                        <div class="col border-end border-secondary">
+                            <span class="d-block text-muted small">Banheiros</span>
+                            <span class="fs-5 text-light fw-bold">{{ imovel.banheiros }}</span>
+                        </div>
+                        <div class="col">
+                            <span class="d-block text-muted small">Vagas</span>
+                            <span class="fs-5 text-light fw-bold">{{ imovel.vagas }}</span>
+                        </div>
+                    </div>
+
+                    <h5 class="text-light mb-3">Sobre este imóvel</h5>
+                    <p class="text-light opacity-75 lead fs-6">{{ imovel.descricao }}</p>
+                    
+                    <h5 class="text-light mt-4 mb-3">Destaques</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <ul class="list-unstyled text-light opacity-75">
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Acabamento de Alto Padrão</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Localização Privilegiada</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Documentação em Dia</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-unstyled text-light opacity-75">
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Portaria 24h</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Área de Lazer Completa</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Aceita Financiamento</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar / Gerador de Proposta -->
+        <div class="col-lg-4">
+            <div class="card bg-dark border-secondary sticky-top" style="top: 80px;">
+                <div class="card-header bg-primary text-white border-secondary">
+                    <h5 class="mb-0"><i class="fas fa-file-contract me-2"></i>Gerar Proposta</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small mb-4">Interessado neste imóvel? Preencha seus dados para gerar um PDF oficial de intenção de compra instantaneamente.</p>
+                    
+                    <form action="{{ url_for('real_estate.gerar_proposta') }}" method="POST">
+                        <input type="hidden" name="imovel_id" value="{{ imovel.id }}">
+                        
+                        <div class="mb-3">
+                            <label class="form-label text-light">Seu Nome</label>
+                            <input type="text" name="nome" id="clientName" class="form-control bg-darker text-light border-secondary" required placeholder="Nome completo">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label text-light">Seu Email</label>
+                            <input type="email" name="email" class="form-control bg-darker text-light border-secondary" required placeholder="seu@email.com">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label text-light">Valor da Proposta (R$)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-darker text-light border-secondary">R$</span>
+                                <input type="number" name="valor" class="form-control bg-darker text-light border-secondary" value="{{ imovel.preco }}" step="0.01" required>
+                            </div>
+                            <div class="form-text text-muted">Você pode sugerir um valor diferente do anunciado.</div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-file-pdf me-2"></i>Baixar Proposta PDF
+                            </button>
+                            <button type="button" class="btn btn-outline-light btn-sm" onclick="sendWhatsapp()">
+                                <i class="fab fa-whatsapp me-2"></i>Falar com Corretor
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function sendWhatsapp() {
+    const nome = document.getElementById('clientName').value || 'Cliente';
+    const titulo = "{{ imovel.titulo }}";
+    const preco = "{{ '{:,.2f}'.format(imovel.preco) }}";
+    const endereco = "{{ imovel.endereco }}";
+    const area = "{{ imovel.area }}";
+    const quartos = "{{ imovel.quartos }}";
+    
+    // Texto ajustado para a primeira pessoa ("Eu me interessei...")
+    const text = `Olá! Me chamo *${nome}* e me interessei por este imóvel no site:\n\n` +
+                 `🏠 *${titulo}*\n` +
+                 `💰 *Valor Anunciado:* R$ ${preco}\n` +
+                 `📍 *Endereço:* ${endereco}\n` +
+                 `📏 *Área:* ${area}m² | 🛏️ *Quartos:* ${quartos}\n\n` +
+                 `Gostaria de agendar uma visita e saber mais detalhes.`;
+
+    const encodedText = encodeURIComponent(text);
+    // Número fictício do Corretor (substitua pelo real)
+    window.open(`https://wa.me/5511999999999?text=${encodedText}`, '_blank');
+}
+</script>
+{% endblock %}

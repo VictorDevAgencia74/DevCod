@@ -1,0 +1,311 @@
+﻿{% extends "base.html" %}
+
+{% block content %}
+<!-- Seção Hero (Home) -->
+<section id="home" class="hero-section text-center d-flex flex-column justify-content-center align-items-center" style="min-height: 100vh; padding-top: 80px; scroll-margin-top: 80px;">
+    <div class="container position-relative z-1">
+        <div class="animate-on-scroll">
+            <h1 class="display-3 fw-bold mb-4 text-light">
+                Transformamos Ideias em <span class="text-primary">Software Real</span>
+            </h1>
+            <p class="lead text-muted mb-5 mx-auto" style="max-width: 800px;">
+                Especialistas em Desenvolvimento Web, Sistemas ERP, Apps de Delivery e Automação de Processos (RPA).
+                Tecnologia de ponta para escalar o seu negócio.
+            </p>
+            
+            <div class="d-flex justify-content-center gap-3 mb-5">
+                <a href="#demos" class="btn btn-primary btn-lg rounded-pill px-5 shadow-lg">
+                    <i class="fas fa-laptop-code me-2"></i>Ver Projetos
+                </a>
+                <a href="{{ url_for('home.landing') }}" class="btn btn-outline-light btn-lg rounded-pill px-5">
+                    <i class="fas fa-rocket me-2"></i>Landing Page (Vendas)
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scroll Down Indicator -->
+    <div class="position-absolute bottom-0 start-50 translate-middle-x mb-4 animate-on-scroll">
+        <a href="#sobre" class="text-light opacity-50 hover-opacity-100 transition-base">
+            <i class="fas fa-chevron-down fa-2x animate-bounce"></i>
+        </a>
+    </div>
+</section>
+
+<!-- Seção Sobre -->
+<section id="sobre" class="section-padding bg-darker" style="scroll-margin-top: 70px;">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6 animate-on-scroll">
+                <div class="position-relative">
+                    <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Coding" class="img-fluid rounded-4 shadow-lg border border-secondary">
+                    <div class="position-absolute bottom-0 end-0 bg-primary p-4 rounded-3 shadow-lg m-n4 d-none d-md-block">
+                        <h3 class="h1 fw-bold text-dark mb-0">5+</h3>
+                        <p class="text-dark mb-0 fw-bold">Anos de Experiência</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 animate-on-scroll">
+                <h2 class="section-title text-light mb-4">Quem é a <span class="text-primary">Fuosteck</span>?</h2>
+                <p class="text-muted mb-4">
+                    Somos um estúdio de desenvolvimento focado em entregar soluções robustas e escaláveis. 
+                    Não entregamos apenas código; entregamos eficiência operacional e novos canais de receita para sua empresa.
+                </p>
+                
+                <div class="row g-4 mb-4">
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-3 fa-2x"></i>
+                            <span class="text-light fw-bold">Fullstack Python & JS</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-3 fa-2x"></i>
+                            <span class="text-light fw-bold">Arquitetura Cloud</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-3 fa-2x"></i>
+                            <span class="text-light fw-bold">Automação RPA</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-3 fa-2x"></i>
+                            <span class="text-light fw-bold">UI/UX Design</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <a href="#contato" class="btn btn-outline-primary">Conheça nossa Metodologia</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Seção Serviços -->
+<section id="servicos" class="section-padding" style="scroll-margin-top: 70px;">
+    <div class="container">
+        <div class="text-center mb-5 animate-on-scroll">
+            <h2 class="section-title text-light">Nossos <span class="text-primary">Serviços</span></h2>
+            <p class="text-muted">Soluções completas para transformar sua empresa.</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Service 1 -->
+            <div class="col-md-3 animate-on-scroll">
+                <div class="service-card">
+                    <div class="icon-box text-primary">
+                        <i class="fas fa-code fa-2x"></i>
+                    </div>
+                    <h4 class="text-light h5">Web Development</h4>
+                    <p class="text-muted small">Sites institucionais, Landing Pages de alta conversão e Portais corporativos.</p>
+                </div>
+            </div>
+
+            <!-- Service 2 -->
+            <div class="col-md-3 animate-on-scroll" style="transition-delay: 0.1s">
+                <div class="service-card">
+                    <div class="icon-box text-success">
+                        <i class="fas fa-cogs fa-2x"></i>
+                    </div>
+                    <h4 class="text-light h5">Sistemas Sob Medida</h4>
+                    <p class="text-muted small">SaaS, ERPs e CRMs personalizados para a regra de negócio da sua empresa.</p>
+                </div>
+            </div>
+
+            <!-- Service 3 -->
+            <div class="col-md-3 animate-on-scroll" style="transition-delay: 0.2s">
+                <div class="service-card">
+                    <div class="icon-box text-warning">
+                        <i class="fas fa-robot fa-2x"></i>
+                    </div>
+                    <h4 class="text-light h5">Automação RPA</h4>
+                    <p class="text-muted small">Robôs para automatizar tarefas repetitivas, scraping de dados e integrações.</p>
+                </div>
+            </div>
+
+            <!-- Service 4 -->
+            <div class="col-md-3 animate-on-scroll" style="transition-delay: 0.3s">
+                <div class="service-card">
+                    <div class="icon-box text-info">
+                        <i class="fas fa-mobile-alt fa-2x"></i>
+                    </div>
+                    <h4 class="text-light h5">Apps Mobile</h4>
+                    <p class="text-muted small">Aplicativos Android/iOS e PWAs (Progressive Web Apps) modernos e rápidos.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Seção Demos (Portfólio) -->
+<section id="demos" class="section-padding bg-darker" style="scroll-margin-top: 70px;">
+    <div class="container">
+        <div class="text-center mb-5 animate-on-scroll">
+            <h2 class="section-title text-light">Nossos <span class="text-primary">Demos Interativos</span></h2>
+            <p class="text-muted">Teste agora mesmo as soluções que desenvolvemos.</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- RPA Card -->
+            <div class="col-md-4 animate-on-scroll">
+                <div class="demo-card rpa">
+                    <div class="icon-container text-primary">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3 class="h4 text-light">Automação RPA</h3>
+                    <div class="stack-badges">
+                        <span class="stack-badge">Python</span>
+                        <span class="stack-badge">Selenium</span>
+                        <span class="stack-badge">Pandas</span>
+                    </div>
+                    <p class="text-muted mb-4">Bots inteligentes para automação de processos, extração de dados e tarefas repetitivas. Inclui dashboard de controle em tempo real.</p>
+                    <a href="{{ url_for('rpa.dashboard') }}" class="btn btn-outline-primary w-100">Acessar Demo</a>
+                </div>
+            </div>
+
+            <!-- ERP Card -->
+            <div class="col-md-4 animate-on-scroll" style="transition-delay: 0.1s">
+                <div class="demo-card erp">
+                    <div class="icon-container text-success">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="h4 text-light">Sistema ERP</h3>
+                    <div class="stack-badges">
+                        <span class="stack-badge">Flask</span>
+                        <span class="stack-badge">SQLAlchemy</span>
+                        <span class="stack-badge">Chart.js</span>
+                    </div>
+                    <p class="text-muted mb-4">Dashboard administrativo completo para gestão de empresas, controle de estoque, financeiro e relatórios gerenciais.</p>
+                    <a href="{{ url_for('erp.index') }}" class="btn btn-outline-success w-100">Acessar Demo</a>
+                </div>
+            </div>
+
+            <!-- Delivery Card -->
+            <div class="col-md-4 animate-on-scroll" style="transition-delay: 0.2s">
+                <div class="demo-card delivery">
+                    <div class="icon-container text-warning">
+                        <i class="fas fa-hamburger"></i>
+                    </div>
+                    <h3 class="h4 text-light">App Delivery</h3>
+                    <div class="stack-badges">
+                        <span class="stack-badge">PWA</span>
+                        <span class="stack-badge">WhatsApp API</span>
+                        <span class="stack-badge">Mobile First</span>
+                    </div>
+                    <p class="text-muted mb-4">Sistema de cardápio digital moderno com carrinho de compras e integração direta com WhatsApp para pedidos.</p>
+                    <a href="{{ url_for('delivery.index') }}" class="btn btn-outline-warning w-100">Acessar Demo</a>
+                </div>
+            </div>
+            
+            <!-- Booking Card -->
+            <div class="col-md-4 animate-on-scroll">
+                <div class="demo-card booking">
+                    <div class="icon-container text-info">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h3 class="h4 text-light">Agendamentos</h3>
+                    <div class="stack-badges">
+                        <span class="stack-badge">FullCalendar</span>
+                        <span class="stack-badge">Email API</span>
+                        <span class="stack-badge">Bootstrap 5</span>
+                    </div>
+                    <p class="text-muted mb-4">Sistema de reservas online para clínicas e consultórios com gestão visual de horários e notificações.</p>
+                    <a href="{{ url_for('booking.index') }}" class="btn btn-outline-info w-100">Acessar Demo</a>
+                </div>
+            </div>
+
+            <!-- Real Estate Card -->
+            <div class="col-md-4 animate-on-scroll" style="transition-delay: 0.1s">
+                <div class="demo-card real-estate">
+                    <div class="icon-container text-danger">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h3 class="h4 text-light">Imobiliária</h3>
+                    <div class="stack-badges">
+                        <span class="stack-badge">Gallery JS</span>
+                        <span class="stack-badge">Filters</span>
+                        <span class="stack-badge">Maps API</span>
+                    </div>
+                    <p class="text-muted mb-4">Vitrine de imóveis premium com filtros avançados, galeria de fotos interativa e formulários de contato.</p>
+                    <a href="{{ url_for('real_estate.index') }}" class="btn btn-outline-danger w-100">Acessar Demo</a>
+                </div>
+            </div>
+
+            <!-- EdTech Card -->
+            <div class="col-md-4 animate-on-scroll" style="transition-delay: 0.2s">
+                <div class="demo-card edtech">
+                    <div class="icon-container text-purple" style="color: #a855f7;">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="h4 text-light">Plataforma EdTech</h3>
+                    <div class="stack-badges">
+                        <span class="stack-badge">Video Player</span>
+                        <span class="stack-badge">Progress Tracking</span>
+                        <span class="stack-badge">Gamification</span>
+                    </div>
+                    <p class="text-muted mb-4">Área de membros para cursos online estilo Netflix com rastreamento de progresso e certificados.</p>
+                    <a href="{{ url_for('edtech.index') }}" class="btn btn-outline-light w-100" style="border-color: #a855f7; color: #a855f7;">Acessar Demo</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Seção Contato -->
+<section id="contato" class="section-padding bg-darker">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center mb-5 animate-on-scroll">
+                <h2 class="section-title text-light">Vamos Conversar?</h2>
+                <p class="text-muted">Tem um projeto em mente? Entre em contato e vamos tirar do papel.</p>
+            </div>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-6 animate-on-scroll">
+                <div class="card bg-dark border-secondary shadow-lg">
+                    <div class="card-body p-5">
+                        <form id="mainContactForm">
+                            <div class="mb-3">
+                                <label class="form-label text-light">Nome</label>
+                                <input type="text" class="form-control bg-darker text-light border-secondary" placeholder="Seu nome">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-light">Email</label>
+                                <input type="email" class="form-control bg-darker text-light border-secondary" placeholder="seu@email.com">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-light">Mensagem</label>
+                                <textarea class="form-control bg-darker text-light border-secondary" rows="5" placeholder="Conte sobre seu projeto..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 py-3 fw-bold">Enviar Mensagem</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Smooth Scrolling para links internos
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if(target) {
+                target.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

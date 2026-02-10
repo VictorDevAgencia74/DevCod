@@ -1,0 +1,52 @@
+.cart-float {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
+    display: none;
+    animation: bounceIn 0.5s;
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.05); opacity: 1; }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
+.badge-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    font-size: 0.85rem;
+    padding: 0.35em 0.65em;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.menu-item-img {
+    height: 150px;
+    object-fit: cover;
+}
+
+/* Estilo para os controles de quantidade */
+.btn-group-sm > .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.btn-group-sm > .btn:focus {
+    box-shadow: none;
+}
+
+.list-group-item {
+    transition: background-color 0.2s;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.list-group-item:last-child {
+    border-bottom: none !important;
+}
+
+.list-group-item:hover {
+    background-color: rgba(255, 255, 255, 0.02) !important;
+}

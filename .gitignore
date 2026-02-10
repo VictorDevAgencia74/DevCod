@@ -4,8 +4,9 @@ __pycache__/
 *$py.class
 
 # Virtual Environment
-venv/
+.venv/
 env/
+.env.example/
 
 # Database (Local SQLite)
 data/*.db

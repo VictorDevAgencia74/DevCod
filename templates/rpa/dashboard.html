@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-light">Fuosteck RPA <i class="fas fa-robot text-info"></i></h1>
+        <p class="lead text-muted">Dashboard de Automação de Processos Robóticos</p>
+    </div>
+
+    <div class="row">
+        <!-- Lista de Bots -->
+        <div class="col-lg-8">
+            <div class="card bg-dark border-secondary shadow-sm">
+                <div class="card-header bg-darker border-secondary d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-light"><i class="fas fa-tasks me-2"></i>Bots Disponíveis</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for task in tasks %}
+                    <div class="list-group-item bg-dark border-secondary p-4 d-flex justify-content-between align-items-center" id="task-row-{{ task.id }}">
+                        <div>
+                            <h5 class="text-light mb-1">
+                                {{ task.nome }}
+                                {% if "Real" in task.nome %}
+                                <span class="badge bg-success ms-2" style="font-size: 0.6em;">ONLINE</span>
+                                {% endif %}
+                            </h5>
+                            <p class="text-muted mb-2 small">{{ task.descricao }}</p>
+                            <span class="badge bg-secondary" id="badge-{{ task.id }}">{{ task.status|upper }}</span>
+                            <small class="text-muted ms-2" id="last-run-{{ task.id }}">Última execução: {{ task.last_run.strftime('%d/%m/%Y %H:%M') if task.last_run else '-' }}</small>
+                        </div>
+                        
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-outline-info btn-lg" onclick="openBotModal({{ task.id }}, '{{ task.nome }}')" id="btn-{{ task.id }}" {% if task.status == 'executando' %}disabled{% endif %}>
+                                <i class="fas fa-play"></i>
+                            </button>
+                            
+                            <!-- Botões de Download Dinâmicos -->
+                            {% if "Cotação" in task.nome %}
+                                <a href="{{ url_for('static', filename='downloads/rpa/cotacao_report_' ~ task.id ~ '.csv') }}" 
+                                class="btn btn-outline-success btn-lg ms-2 {% if task.status != 'concluido' %}d-none{% endif %}" 
+                                id="download-btn-{{ task.id }}" download><i class="fas fa-download"></i></a>
+                            
+                            {% elif "CNPJ" in task.nome %}
+                                <a href="{{ url_for('static', filename='downloads/rpa/cnpj_report_' ~ task.id ~ '.csv') }}" 
+                                class="btn btn-outline-success btn-lg ms-2 {% if task.status != 'concluido' %}d-none{% endif %}" 
+                                id="download-btn-{{ task.id }}" download><i class="fas fa-download"></i></a>
+                            
+                            {% else %}
+                                <a href="{{ url_for('static', filename='downloads/rpa/seo_report_' ~ task.id ~ '.csv') }}" 
+                                class="btn btn-outline-success btn-lg ms-2 {% if 'Real' not in task.nome or task.status != 'concluido' or 'Relatório gerado' not in (task.logs or '') %}d-none{% endif %}" 
+                                id="download-btn-{{ task.id }}" download><i class="fas fa-download"></i></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Terminal de Logs -->
+        <div class="col-lg-4">
+            <div class="card bg-black border-secondary h-100 font-monospace">
+                <div class="card-header bg-dark border-secondary d-flex justify-content-between align-items-center">
+                    <span class="text-success"><i class="fas fa-terminal me-2"></i>Live Logs</span>
+                    <span class="spinner-border spinner-border-sm text-success d-none" id="log-spinner"></span>
+                </div>
+                <div class="card-body p-3 overflow-auto" style="height: 400px;" id="terminal-body">
+                    <p class="text-muted">> Aguardando comando...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Parâmetros -->
+<div class="modal fade" id="botParamModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary text-light">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title" id="modalBotTitle">Configurar Bot</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="botForm" onsubmit="confirmRunBot(event)">
+                    <input type="hidden" id="modalBotId">
+                    <input type="hidden" id="modalBotName">
+                    
+                    <div class="mb-3">
+                        <label for="modalParamInput" class="form-label" id="modalParamLabel">Parâmetro</label>
+                        <input type="text" class="form-control bg-darker text-light border-secondary" id="modalParamInput" required>
+                        <div class="form-text text-muted" id="modalParamHelp"></div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-rocket me-2"></i>Iniciar Execução</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let paramModal;
+
+document.addEventListener('DOMContentLoaded', function() {
+    paramModal = new bootstrap.Modal(document.getElementById('botParamModal'));
+});
+
+function openBotModal(id, nome) {
+    // Se for Cotação, executa direto pois não precisa de input
+    if (nome.includes("Cotação")) {
+        runBot(id, nome, null);
+        return;
+    }
+
+    const modalTitle = document.getElementById('modalBotTitle');
+    const label = document.getElementById('modalParamLabel');
+    const input = document.getElementById('modalParamInput');
+    const help = document.getElementById('modalParamHelp');
+    
+    document.getElementById('modalBotId').value = id;
+    document.getElementById('modalBotName').value = nome;
+    
+    modalTitle.innerText = `Configurar ${nome}`;
+    
+    if (nome.includes("SEO")) {
+        label.innerText = "URL do Site Alvo";
+        input.type = "url";
+        input.placeholder = "https://www.exemplo.com.br";
+        input.value = "https://www.google.com";
+        help.innerText = "Informe a URL completa (com http/https) para auditoria.";
+    } else if (nome.includes("CNPJ")) {
+        label.innerText = "CNPJ da Empresa";
+        input.type = "text";
+        input.placeholder = "00.000.000/0001-91";
+        input.value = "";
+        help.innerText = "Digite apenas números ou com pontuação.";
+    } else {
+        // Fallback para outros bots
+        label.innerText = "Parâmetro de Execução";
+        input.type = "text";
+        input.value = "";
+    }
+    
+    paramModal.show();
+    
+    // Foca no input após abrir
+    setTimeout(() => input.focus(), 500);
+}
+
+function confirmRunBot(e) {
+    e.preventDefault();
+    const id = document.getElementById('modalBotId').value;
+    const nome = document.getElementById('modalBotName').value;
+    const param = document.getElementById('modalParamInput').value;
+    
+    paramModal.hide();
+    runBot(id, nome, param);
+}
+
+function runBot(id, nome, targetParam) {
+    const btn = document.getElementById(`btn-${id}`);
+    const badge = document.getElementById(`badge-${id}`);
+    const terminal = document.getElementById('terminal-body');
+    const spinner = document.getElementById('log-spinner');
+
+    // UI Updates
+    btn.disabled = true;
+    badge.className = 'badge bg-warning text-dark';
+    badge.innerText = 'EXECUTANDO';
+    spinner.classList.remove('d-none');
+    
+    if (nome && nome.includes("Real") && targetParam) {
+        terminal.innerHTML += `<p class="text-warning mb-0">> Iniciando ${nome} com: ${targetParam}...</p>`;
+    } else {
+        terminal.innerHTML += `<p class="text-warning mb-0">> Iniciando Bot #${id}...</p>`;
+    }
+    terminal.scrollTop = terminal.scrollHeight;
+
+    // Start Bot API
+    fetch(`/demos/rpa/start/${id}`, { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: targetParam }) 
+    })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                const delay = (nome && nome.includes("Real")) ? 1500 : 3000;
+                setTimeout(() => { finishBot(id); }, delay);
+            }
+        });
+}
+
+function finishBot(id) {
+    fetch(`/demos/rpa/finish/${id}`, { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+            updateStatus(id);
+        });
+}
+
+function updateStatus(id) {
+    fetch(`/demos/rpa/status/${id}`)
+        .then(res => res.json())
+        .then(data => {
+            const btn = document.getElementById(`btn-${id}`);
+            const badge = document.getElementById(`badge-${id}`);
+            const lastRun = document.getElementById(`last-run-${id}`);
+            const terminal = document.getElementById('terminal-body');
+            const spinner = document.getElementById('log-spinner');
+            const downloadBtn = document.getElementById(`download-btn-${id}`);
+
+            btn.disabled = false;
+            
+            // Verifica status retornado
+            if (data.status === 'concluido') {
+                badge.className = 'badge bg-success';
+                badge.innerText = 'CONCLUÍDO';
+                
+                // Se existe botão de download e foi uma execução bem sucedida do bot real
+                if (downloadBtn && data.logs.includes("Relatório gerado")) {
+                    downloadBtn.classList.remove('d-none');
+                }
+            } else {
+                badge.className = 'badge bg-danger'; // Caso de erro
+                badge.innerText = data.status.toUpperCase();
+            }
+            
+            lastRun.innerText = `Última: ${data.last_run.split(' ')[1]}`; // Pega só a hora
+            spinner.classList.add('d-none');
+
+            // Print Logs
+            const logs = data.logs.split('\n');
+            logs.forEach(line => {
+                if(line) {
+                    let cssClass = "text-success small";
+                    if (line.includes("Erro") || line.includes("Alerta")) cssClass = "text-danger small";
+                    if (line.includes("Iniciando") || line.includes("Resultados")) cssClass = "text-info small fw-bold";
+                    
+                    terminal.innerHTML += `<p class="${cssClass} mb-0">${line}</p>`;
+                }
+            });
+            terminal.innerHTML += `<p class="text-muted mb-0">> Tarefa finalizada.</p><hr class="border-secondary">`;
+            terminal.scrollTop = terminal.scrollHeight;
+        });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,153 @@
+﻿﻿{% extends "base.html" %}
+
+{% block head %}
+<!-- FullCalendar CSS -->
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/booking.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5 bg-darker">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="text-light"><i class="fas fa-calendar-alt text-success me-2"></i>Agendamento Online</h2>
+                <p class="text-muted mb-0">Sistema de Reservas SaaS (Demo)</p>
+            </div>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#bookingModal">
+                <i class="fas fa-plus me-2"></i>Novo Agendamento
+            </button>
+        </div>
+
+        <div class="card bg-dark border-secondary shadow-lg">
+            <div class="card-body p-4">
+                <div id='calendar' 
+                     data-events-url="{{ url_for('booking.get_events') }}"
+                     data-prontuario-url="{{ url_for('booking.get_prontuario', agendamento_id=0) }}"
+                     data-whatsapp-url="{{ url_for('booking.send_whatsapp', agendamento_id=0) }}"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Agendamento (Novo) -->
+<div class="modal fade" id="bookingModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-light border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title">Reservar Horário</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('booking.new_booking') }}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Seu Nome</label>
+                        <input type="text" name="nome" class="form-control bg-darker text-light border-secondary" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Seu Email</label>
+                        <input type="email" name="email" class="form-control bg-darker text-light border-secondary">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Seu WhatsApp</label>
+                        <input type="text" name="telefone" class="form-control bg-darker text-light border-secondary" placeholder="(11) 99999-9999">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Serviço</label>
+                        <select name="servico_id" class="form-select bg-darker text-light border-secondary" required>
+                            {% for servico in servicos %}
+                            <option value="{{ servico.id }}">{{ servico.nome }} ({{ servico.duracao }} min) - R$ {{ servico.preco }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Data e Hora</label>
+                        <input type="datetime-local" name="data_hora" class="form-control bg-darker text-light border-secondary" required>
+                    </div>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Confirmar Reserva</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Detalhes do Agendamento / Prontuário -->
+<div class="modal fade" id="eventModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content bg-dark text-light border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title">Detalhes do Agendamento</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="text-primary">Cliente</h6>
+                        <p id="eventCliente" class="mb-1 fw-bold"></p>
+                        <p id="eventTelefone" class="text-muted small mb-0"></p>
+                        <p id="eventEmail" class="text-muted small"></p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <h6 class="text-primary">Serviço</h6>
+                        <p id="eventServico" class="mb-1"></p>
+                        <p id="eventHorario" class="text-success small"></p>
+                    </div>
+                </div>
+
+                <!-- Abas -->
+                <ul class="nav nav-tabs border-secondary mb-3" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active text-light" id="prontuario-tab" data-bs-toggle="tab" data-bs-target="#prontuario-pane" type="button" role="tab">Prontuário</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link text-light" id="acoes-tab" data-bs-toggle="tab" data-bs-target="#acoes-pane" type="button" role="tab">Ações</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <!-- Aba Prontuário -->
+                    <div class="tab-pane fade show active" id="prontuario-pane" role="tabpanel">
+                        <form id="prontuarioForm">
+                            <input type="hidden" id="currentEventId">
+                            <div class="mb-3">
+                                <label class="form-label text-muted small">Queixa Principal</label>
+                                <input type="text" id="prontuarioQueixa" name="queixa" class="form-control bg-darker text-light border-secondary">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted small">Histórico / Anamnese</label>
+                                <textarea id="prontuarioHistorico" name="historico" class="form-control bg-darker text-light border-secondary" rows="3"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-muted small">Observações Clínicas / Evolução</label>
+                                <textarea id="prontuarioObservacoes" name="observacoes" class="form-control bg-darker text-light border-secondary" rows="3"></textarea>
+                            </div>
+                            <div class="text-end">
+                                <button type="button" class="btn btn-primary btn-sm" onclick="saveProntuario()">
+                                    <i class="fas fa-save me-2"></i>Salvar Prontuário
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- Aba Ações -->
+                    <div class="tab-pane fade" id="acoes-pane" role="tabpanel">
+                        <div class="d-grid gap-3">
+                            <button class="btn btn-outline-success" onclick="sendWhatsappReminder()">
+                                <i class="fab fa-whatsapp me-2"></i>Enviar Lembrete de Confirmação
+                            </button>
+                            <button class="btn btn-outline-danger" disabled>
+                                <i class="fas fa-times me-2"></i>Cancelar Agendamento (Em breve)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/booking.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5 bg-darker">
+    <div class="container">
+        <!-- Header do ERP -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="text-light"><i class="fas fa-chart-line text-primary me-2"></i>Dashboard ERP</h2>
+                <p class="text-muted mb-0">Visão geral do negócio (Ambiente de Demonstração)</p>
+            </div>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#novoProdutoModal">
+                <i class="fas fa-plus me-2"></i>Novo Produto
+            </button>
+        </div>
+
+        <!-- KPIs -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="card bg-dark border-secondary h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="text-muted mb-0">Faturamento Total</h6>
+                            <i class="fas fa-dollar-sign text-success"></i>
+                        </div>
+                        <h3 class="text-light fw-bold">R$ {{ "%.2f"|format(kpis.faturamento) }}</h3>
+                        <span class="text-success small"><i class="fas fa-arrow-up me-1"></i>12% vs mês anterior</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-dark border-secondary h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="text-muted mb-0">Total Pedidos</h6>
+                            <i class="fas fa-shopping-bag text-primary"></i>
+                        </div>
+                        <h3 class="text-light fw-bold">{{ kpis.pedidos }}</h3>
+                        <span class="text-primary small">45 novos hoje</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-dark border-secondary h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="text-muted mb-0">Alertas de Estoque</h6>
+                            <i class="fas fa-exclamation-triangle text-warning"></i>
+                        </div>
+                        <h3 class="text-light fw-bold">{{ kpis.alertas }}</h3>
+                        <span class="text-muted small">Produtos abaixo do mínimo</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Gráfico de Vendas -->
+            <div class="col-lg-8">
+                <div class="card bg-dark border-secondary h-100">
+                    <div class="card-header bg-transparent border-secondary">
+                        <h5 class="text-light mb-0">Desempenho de Vendas</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="vendasChart" data-url="{{ url_for('erp.chart_data') }}"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de Produtos Recentes -->
+            <div class="col-lg-4">
+                <div class="card bg-dark border-secondary h-100">
+                    <div class="card-header bg-transparent border-secondary">
+                        <h5 class="text-light mb-0">Estoque Recente</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="border-secondary text-muted">Produto</th>
+                                        <th class="border-secondary text-muted text-end">Estoque</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for produto in produtos[:5] %}
+                                    <tr>
+                                        <td class="border-secondary">
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-secondary rounded p-1 me-2" style="width: 32px; height: 32px;"></div>
+                                                <span>{{ produto.nome }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="border-secondary text-end">
+                                            {% if produto.estoque < 10 %}
+                                                <span class="badge bg-danger">{{ produto.estoque }}</span>
+                                            {% else %}
+                                                <span class="badge bg-success">{{ produto.estoque }}</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="2" class="text-center text-muted py-4">Nenhum produto cadastrado</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Novo Produto -->
+<div class="modal fade" id="novoProdutoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-light border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title">Novo Produto</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('erp.novo_produto') }}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nome do Produto</label>
+                        <input type="text" name="nome" class="form-control bg-darker text-light border-secondary" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Categoria</label>
+                            <select name="categoria" class="form-select bg-darker text-light border-secondary">
+                                <option value="Eletrônicos">Eletrônicos</option>
+                                <option value="Móveis">Móveis</option>
+                                <option value="Serviços">Serviços</option>
+                            </select>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Preço (R$)</label>
+                            <input type="number" step="0.01" name="preco" class="form-control bg-darker text-light border-secondary" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Estoque Inicial</label>
+                        <input type="number" name="estoque" class="form-control bg-darker text-light border-secondary" required>
+                    </div>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/erp.js') }}"></script>
+{% endblock %}

@@ -1,82 +1,68 @@
-# SIGF-Const: Sistema Integrado de Gestão de Frota (Offline-First)
+﻿# Fuosteck Portfolio & SaaS Demos
 
-## 📌 Sobre o Projeto
+Este repositório contém o portfólio profissional da **Fuosteck**, desenvolvido com uma arquitetura modular em Python (Flask), focado em alta performance e escalabilidade. O projeto inclui não apenas a landing page, mas também demonstrações funcionais de sistemas (SaaS) integrados.
 
-O **SIGF-Const** é uma solução tecnológica desenvolvida para resolver o desafio de gestão de ativos em canteiros de obras com conectividade intermitente. 
+##  Tecnologias
 
-O sistema opera com uma arquitetura **Offline-First**, permitindo que motoristas e operadores preencham checklists, registrem abastecimentos e ocorrências diretamente em seus dispositivos (Tablets/Celulares) sem depender de internet. Os dados são armazenados localmente e, futuramente, serão sincronizados com a nuvem quando houver conexão.
+*   **Backend:** Python 3.12, Flask, SQLAlchemy.
+*   **Frontend:** HTML5, CSS3, Bootstrap 5, JavaScript (Vanilla).
+*   **Banco de Dados:** SQLite (Dev) / PostgreSQL (Prod - Supabase Ready).
+*   **Visualização de Dados:** Chart.js, FullCalendar.js.
 
-## 🚀 Funcionalidades Principais (MVP Atual)
+##  Estrutura do Projeto
 
-*   **App PWA (Progressive Web App):** Instalável no celular, leve e funciona offline.
-*   **Formulários Dinâmicos:** Checklists (Veículos Leves, Pesados, Máquinas) gerados automaticamente a partir de arquivos JSON. Flexibilidade total para criar novos modelos sem alterar código.
-*   **Backend Robusto:** API em Python (FastAPI) pronta para escalar.
-*   **Persistência Local:** Banco de dados SQLite embarcado para garantir que nenhum dado se perca no campo.
+`
+/
+ assets/             # Arquivos estáticos (CSS, JS, Imagens)
+ src/
+    config/         # Configurações do App
+    controllers/    # Rotas e Lógica de Controle (Blueprints)
+    models/         # Modelos de Banco de Dados (ORM)
+    services/       # Regras de Negócio
+    database.py     # Instância compartilhada do DB
+ templates/          # Arquivos HTML (Jinja2)
+ app.py              # Entry Point da aplicação
+ requirements.txt    # Dependências
+`
 
-## 🛠️ Stack Tecnológica
+##  Instalação e Execução
 
-*   **Backend:** Python 3.x, FastAPI, SQLAlchemy, Pydantic.
-*   **Frontend:** HTML5, CSS3 (Bootstrap 5), JavaScript (Vanilla).
-*   **Banco de Dados:** SQLite (Local) -> *Preparado para PostgreSQL/Supabase*.
-*   **Infra:** Service Workers para cache e funcionamento offline.
+1.  **Clone o repositório:**
+    `ash
+    git clone https://github.com/seu-usuario/fuosteck-portfolio.git
+    cd fuosteck-portfolio
+    `
 
-## 📂 Estrutura do Projeto
-
-```text
-/backend      -> Código da API Python (main.py, models).
-/frontend     -> Interface do usuário (HTML, JS, Service Worker).
-/data         -> Banco de dados SQLite (sigf_local.db).
-/schemas      -> Configurações JSON dos formulários (checklists.json).
-/documentacao -> Manuais de processos, relatórios e visão técnica.
-```
-
-## ▶️ Como Rodar o Projeto
-
-1.  **Configurar Ambiente Python:**
-    ```bash
+2.  **Crie o ambiente virtual:**
+    `ash
     python -m venv venv
-    .\venv\Scripts\activate
+    # Windows
+    .\venv\Scripts\Activate
+    # Linux/Mac
+    source venv/bin/activate
+    `
+
+3.  **Instale as dependências:**
+    `ash
     pip install -r requirements.txt
-    ```
+    `
 
-2.  **Executar o Servidor:**
-    ```bash
-    python backend/main.py
-    ```
+4.  **Execute a aplicação:**
+    `ash
+    python app.py
+    `
+    Acesse: http://127.0.0.1:5000
 
-3.  **Acessar:**
-    Abra o navegador em `http://localhost:8000`.
+##  Demos Incluídos
 
-4.  **Configuração Inicial de Usuários:**
-    Para acessar o sistema (que agora é protegido), você precisa criar os usuários padrão:
-    ```bash
-    python setup_users.py
-    ```
-    Isso criará:
-    *   **Admin:** Usuário `admin` / Senha `admin123`
-    *   **Motorista:** Usuário `motorista1` / Senha `moto123`
+1.  **Sistema ERP (Gestão Empresarial):** Dashboard administrativo com gráficos de vendas e gestão de estoque.
+    *   *URL:* /demos/erp
+2.  **Agendamento Online (Booking SaaS):** Sistema de reservas com calendário interativo para clínicas/consultorias.
+    *   *URL:* /demos/booking
 
-## 🔮 Roadmap e Futuras Melhorias (Banco de Ideias)
+##  Relatório Estratégico
 
-Para garantir a evolução contínua e escalabilidade do SIGF-Const, os seguintes passos foram mapeados:
+Consulte o arquivo RELATORIO_ESTRATEGICO.md na raiz para uma análise detalhada de nichos de mercado e oportunidades de negócio mapeadas para a Fuosteck.
 
-### FASE 1: Consolidação (Imediato)
-- [ ] **CRUD Administrativo:** Interface Web para gestores editarem/excluírem registros lançados errados.
-- [ ] **Exportação Excel:** Endpoint para baixar todos os checklists em formato `.xlsx` para análise financeira.
-- [ ] **Visualização de Histórico:** Permitir que o motorista veja seus últimos envios no próprio App.
-
-### FASE 2: Conectividade e Nuvem (Curto Prazo)
-- [ ] **Sincronização Bidirecional:** Script de background para enviar dados do SQLite local para o Supabase (PostgreSQL) assim que detectar internet.
-- [ ] **Autenticação:** Sistema de Login (JWT) para diferenciar Motorista, Mecânico e Gestor.
-- [ ] **Tratamento de Conflitos:** Lógica para resolver edições simultâneas (local vs nuvem).
-
-### FASE 3: Inteligência e IoT (Médio/Longo Prazo)
-- [ ] **Dashboards BI:** Painéis gráficos de consumo de combustível e disponibilidade de frota.
-- [ ] **Manutenção Preditiva:** Alertas automáticos baseados no horímetro/KM informado (ex: "Troca de óleo em 50h").
-- [ ] **Integração IoT:** Captura automática de dados de rastreadores (Sascar/Omnilink) para auditar o input manual.
-
-## 📚 Documentação Detalhada
-
-Para detalhes profundos sobre processos e arquitetura, consulte os arquivos na raiz do projeto:
-*   `documentacao.md`: Visão de Negócio, Processos (POPs), KPIs e Modelos de Documentos.
-*   `documentacao_sistema.md`: Visão Técnica, Arquitetura de Software e Plano de Escalabilidade.
+---
+Desenvolvido por **Fuosteck** - Soluções Digitais.
