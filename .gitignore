@@ -4,16 +4,23 @@ __pycache__/
 *$py.class
 
 # Virtual Environment
+venv/
 .venv/
-.env/
-.env.example/
+env/
+
+# Environment Variables
+.env
 
 # Database (Local SQLite)
+instance/
 data/*.db
 *.sqlite3
 
 # Logs
 *.log
+
+# Generated Reports
+assets/downloads/rpa/*.csv
 
 # OS generated files
 Thumbs.db
