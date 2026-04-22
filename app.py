@@ -62,9 +62,18 @@ def create_app():
     app.register_blueprint(edtech_bp)
     app.register_blueprint(rpa_bp)
     
-    # Criar tabelas se não existirem
-    with app.app_context():
-        db.create_all()
+    # CLI command para inicializar o banco de dados
+    @app.cli.command()
+    def init_db():
+        """Inicializa o banco de dados."""
+        with app.app_context():
+            db.create_all()
+            print("✅ Banco de dados inicializado!")
+    
+    # Criar tabelas automaticamente se estiver em desenvolvimento e banco não existir
+    if app.debug and 'sqlite' in app.config['SQLALCHEMY_DATABASE_URI']:
+        with app.app_context():
+            db.create_all()
 
     return app
 

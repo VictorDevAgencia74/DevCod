@@ -15,6 +15,14 @@ def index():
 def landing():
     return render_template('landing.html')
 
+@home_bp.route('/cases/vendas')
+def case_sales():
+    return render_template('case_sales.html')
+
+@home_bp.route('/cases/churn')
+def case_churn():
+    return render_template('case_churn.html')
+
 @home_bp.route('/send-message', methods=['POST'])
 def send_message():
     nome = request.form.get('nome')

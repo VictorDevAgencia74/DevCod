@@ -2,14 +2,14 @@
 
 {% block head %}
 <!-- Meta Tags Open Graph & Twitter para Compartilhamento Social -->
-<meta property="og:title" content="Fuosteck | Desenvolvimento Web & Automação RPA" />
-<meta property="og:description" content="Transforme sua empresa com tecnologia. Especialistas em SaaS, ERPs sob medida e Robôs de Automação que economizam tempo e dinheiro." />
+<meta property="og:title" content="Fuosteck | Software, Automação & Ciência de Dados" />
+<meta property="og:description" content="Soluções digitais com foco em performance e dados: SaaS, ERPs sob medida, automação e análises para apoiar decisões." />
 <meta property="og:image" content="{{ url_for('static', filename='img/og-preview.jpg', _external=True) }}" />
 <meta property="og:url" content="{{ request.url }}" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Fuosteck - Soluções Digitais de Alta Performance" />
-<meta name="twitter:description" content="Automação inteligente e sistemas web robustos. Clique para ver nosso portfólio completo." />
+<meta name="twitter:description" content="Sistemas web robustos, automação e ciência de dados. Clique para ver nosso portfólio completo." />
 
 <style>
     /* Ajustes específicos para a Landing Page */
@@ -48,11 +48,11 @@
         <!-- Profile Header -->
         <div class="bio-profile">
             <div class="profile-img-container">
-                <img src="https://ui-avatars.com/api/?name=Dev+Fullstack&background=00d2ff&color=0f172a&size=256&bold=true" alt="Profile" class="profile-img">
+                <img src="https://ui-avatars.com/api/?name=Fullstack+%26+Data&background=00d2ff&color=0f172a&size=256&bold=true" alt="Profile" class="profile-img">
             </div>
             <h1 class="bio-name">Fuosteck Dev</h1>
-            <p class="bio-role">Fullstack Developer & Architect</p>
-            <p class="text-muted small mt-2">Transformando ideias complexas em código limpo.</p>
+            <p class="bio-role">Fullstack Developer | Tecnologia em Ciência de Dados</p>
+            <p class="text-muted small mt-2">Software, automação e análises para decisões melhores.</p>
         </div>
 
         <!-- Links List -->
@@ -65,7 +65,35 @@
                 </div>
                 <div class="link-info">
                     <span class="link-title">Portfólio Completo</span>
-                    <span class="link-desc">Veja todos os demos e projetos</span>
+                    <span class="link-desc">Veja projetos e cases (dados e software)</span>
+                </div>
+                <div class="link-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+
+            <!-- Data Science Case 1 -->
+            <a href="{{ url_for('home.case_sales') }}" class="link-card animate-on-scroll">
+                <div class="link-icon">
+                    <i class="fas fa-chart-column"></i>
+                </div>
+                <div class="link-info">
+                    <span class="link-title">Análise de Vendas</span>
+                    <span class="link-desc">KPIs, receita, ticket médio e sazonalidade</span>
+                </div>
+                <div class="link-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+
+            <!-- Data Science Case 2 -->
+            <a href="{{ url_for('home.case_churn') }}" class="link-card animate-on-scroll">
+                <div class="link-icon">
+                    <i class="fas fa-database"></i>
+                </div>
+                <div class="link-info">
+                    <span class="link-title">Análise de Churn</span>
+                    <span class="link-desc">Segmentação e ações para retenção</span>
                 </div>
                 <div class="link-arrow">
                     <i class="fas fa-chevron-right"></i>

@@ -1,0 +1,326 @@
+{% extends "base.html" %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<section class="section-padding bg-darker" style="scroll-margin-top: 70px;">
+    <div class="container">
+        <div class="d-flex flex-column flex-lg-row align-items-start justify-content-between gap-3 mb-4">
+            <div>
+                <h1 class="display-5 fw-bold text-light mb-2">Análise de Churn & Segmentação</h1>
+                <p class="text-muted mb-0">Diagnóstico de retenção: coortes, variáveis de risco, segmentos e plano de ação.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-light" href="{{ url_for('home.index', _anchor='demos') }}">Voltar</a>
+                <a class="btn btn-outline-primary" href="{{ url_for('home.index', _anchor='contato') }}">Quero reduzir meu Churn</a>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="card bg-dark border-secondary h-100">
+                    <div class="card-body">
+                        <h2 class="h5 text-light mb-3">Métricas-Chave</h2>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="metric-card">
+                                    <div class="metric-label">Churn Mensal</div>
+                                    <div class="metric-value">6,2%</div>
+                                    <div class="metric-sub text-danger">acima do alvo</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="metric-card">
+                                    <div class="metric-label">Meta (Ação)</div>
+                                    <div class="metric-value">4,7%</div>
+                                    <div class="metric-sub text-success">-1,5pp</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="metric-card">
+                                    <div class="metric-label">Ativação 7d</div>
+                                    <div class="metric-value">58%</div>
+                                    <div class="metric-sub text-primary">onboarding</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="metric-card">
+                                    <div class="metric-label">NPS</div>
+                                    <div class="metric-value">41</div>
+                                    <div class="metric-sub text-warning">melhorável</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="border-secondary my-4">
+
+                        <h3 class="h6 text-light mb-2">Hipóteses de Causa</h3>
+                        <ul class="text-muted mb-0 ps-3">
+                            <li>Baixo uso nas primeiras 2 semanas aumenta risco de churn.</li>
+                            <li>Planos mensais cancelam mais; foco em incentivo anual.</li>
+                            <li>Onboarding incompleto correlaciona com abandono precoce.</li>
+                            <li>Suporte reativo; falta de alertas e playbooks.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="card bg-dark border-secondary h-100">
+                    <div class="card-body">
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <h2 class="h5 text-light mb-3">Churn por Coorte</h2>
+                                <div class="chart-wrap">
+                                    <canvas id="cohortChart" height="120"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h3 class="h6 text-light mb-3">Risco por Segmento</h3>
+                                <div class="chart-wrap">
+                                    <canvas id="segmentRiskChart" height="180"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h3 class="h6 text-light mb-3">Importância de Variáveis</h3>
+                                <div class="chart-wrap">
+                                    <canvas id="featureChart" height="180"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mt-1">
+            <div class="col-lg-6">
+                <div class="card bg-dark border-secondary h-100">
+                    <div class="card-body">
+                        <h2 class="h5 text-light mb-3">Código (Modelagem)</h2>
+                        <div class="accordion custom-accordion" id="codeAccordionChurn">
+                            <div class="accordion-item bg-transparent border-secondary">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#churnCode1">
+                                        Preparação + Features (Python/Pandas)
+                                    </button>
+                                </h2>
+                                <div id="churnCode1" class="accordion-collapse collapse" data-bs-parent="#codeAccordionChurn">
+                                    <div class="accordion-body">
+                                        <pre class="code-block mb-0"><code>import pandas as pd
+
+df = pd.read_csv("customers.csv")
+df["signup_date"] = pd.to_datetime(df["signup_date"])
+df["last_activity"] = pd.to_datetime(df["last_activity"])
+
+df["tenure_days"] = (pd.Timestamp.today() - df["signup_date"]).dt.days
+df["inactive_30d"] = (pd.Timestamp.today() - df["last_activity"]).dt.days &gt;= 30
+df["plan_is_monthly"] = df["plan"].eq("mensal").astype(int)
+df["onboarding_done"] = df["onboarding_steps_done"].ge(5).astype(int)
+
+y = df["churned"].astype(int)
+X = df[["inactive_30d", "plan_is_monthly", "onboarding_done", "tenure_days"]]</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item bg-transparent border-secondary mt-3">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#churnCode2">
+                                        Regressão Logística (explicabilidade)
+                                    </button>
+                                </h2>
+                                <div id="churnCode2" class="accordion-collapse collapse" data-bs-parent="#codeAccordionChurn">
+                                    <div class="accordion-body">
+                                        <pre class="code-block mb-0"><code>from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import roc_auc_score
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+model = LogisticRegression(max_iter=1000)
+model.fit(X_train, y_train)
+
+proba = model.predict_proba(X_test)[:, 1]
+auc = roc_auc_score(y_test, proba)</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="border-secondary my-4">
+
+                        <h3 class="h6 text-light mb-2">Métricas de Modelo</h3>
+                        <div class="table-responsive">
+                            <table class="table table-dark table-sm mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="border-secondary text-muted">Métrica</th>
+                                        <th class="border-secondary text-muted text-end">Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border-secondary">AUC (ROC)</td>
+                                        <td class="border-secondary text-end">0,84</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border-secondary">Precision (Top 20%)</td>
+                                        <td class="border-secondary text-end">0,62</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border-secondary">Recall (Top 20%)</td>
+                                        <td class="border-secondary text-end">0,55</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border-secondary">Lift (Top 20%)</td>
+                                        <td class="border-secondary text-end">2,3x</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card bg-dark border-secondary h-100">
+                    <div class="card-body">
+                        <h2 class="h5 text-light mb-3">Plano de Ação (Impacto)</h2>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="p-3 border border-secondary rounded-3 bg-dark">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h3 class="h6 text-light mb-0">Playbook: Baixo uso (7–14 dias)</h3>
+                                        <span class="badge bg-danger">Alto risco</span>
+                                    </div>
+                                    <p class="text-muted mb-2">Sequência de onboarding + alertas automáticos para ativação e redução de abandono.</p>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <span class="badge bg-primary">E-mail</span>
+                                        <span class="badge bg-secondary">WhatsApp</span>
+                                        <span class="badge bg-success">In-app</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="p-3 border border-secondary rounded-3 bg-dark">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h3 class="h6 text-light mb-0">Oferta: migração anual</h3>
+                                        <span class="badge bg-warning text-dark">Médio risco</span>
+                                    </div>
+                                    <p class="text-muted mb-2">Segmentar planos mensais com bom uso e oferecer migração anual com incentivo.</p>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <span class="badge bg-info text-dark">LTV</span>
+                                        <span class="badge bg-success">Retenção</span>
+                                        <span class="badge bg-primary">Segmentação</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="p-3 border border-secondary rounded-3 bg-dark">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h3 class="h6 text-light mb-0">Painel de Alertas</h3>
+                                        <span class="badge bg-success">Quick win</span>
+                                    </div>
+                                    <p class="text-muted mb-2">Dashboard com alertas de risco (inatividade, falhas no onboarding) e tarefas para CS.</p>
+                                    <a class="btn btn-outline-primary w-100 mt-2" href="{{ url_for('home.index', _anchor='contato') }}">Quero implementar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const gridColor = "rgba(148, 163, 184, 0.18)";
+    const labelColor = "rgba(226, 232, 240, 0.9)";
+    const cyan = "#00d2ff";
+    const blue = "#3a7bd5";
+    const danger = "#ef4444";
+    const warning = "#f59e0b";
+    const success = "#22c55e";
+
+    new Chart(document.getElementById("cohortChart"), {
+        type: "line",
+        data: {
+            labels: ["M0","M1","M2","M3","M4","M5"],
+            datasets: [
+                {
+                    label: "Coorte Jan",
+                    data: [0, 5.5, 6.8, 7.4, 7.9, 8.2],
+                    borderColor: cyan,
+                    backgroundColor: "rgba(0, 210, 255, 0.12)",
+                    tension: 0.35,
+                    fill: true,
+                    pointRadius: 3
+                },
+                {
+                    label: "Coorte Fev",
+                    data: [0, 4.8, 5.9, 6.6, 7.0, 7.3],
+                    borderColor: blue,
+                    backgroundColor: "rgba(58, 123, 213, 0.10)",
+                    tension: 0.35,
+                    fill: true,
+                    pointRadius: 3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { labels: { color: labelColor } } },
+            scales: {
+                x: { grid: { color: gridColor }, ticks: { color: labelColor } },
+                y: { grid: { color: gridColor }, ticks: { color: labelColor }, title: { display: true, text: "Churn acumulado (%)", color: labelColor } }
+            }
+        }
+    });
+
+    new Chart(document.getElementById("segmentRiskChart"), {
+        type: "bar",
+        data: {
+            labels: ["Baixo uso 30d", "Plano mensal", "Onboarding incompleto", "Suporte alto"],
+            datasets: [{
+                label: "Risco relativo",
+                data: [2.6, 1.8, 2.2, 1.4],
+                backgroundColor: [danger, warning, cyan, success]
+            }]
+        },
+        options: {
+            plugins: { legend: { labels: { color: labelColor } } },
+            scales: {
+                x: { grid: { color: gridColor }, ticks: { color: labelColor } },
+                y: { grid: { color: gridColor }, ticks: { color: labelColor } }
+            }
+        }
+    });
+
+    new Chart(document.getElementById("featureChart"), {
+        type: "bar",
+        data: {
+            labels: ["Inactive 30d", "Onboarding", "Plano mensal", "Tenure"],
+            datasets: [{
+                label: "Importância (normalizada)",
+                data: [0.42, 0.28, 0.20, 0.10],
+                backgroundColor: "rgba(0, 210, 255, 0.35)"
+            }]
+        },
+        options: {
+            indexAxis: "y",
+            plugins: { legend: { labels: { color: labelColor } } },
+            scales: {
+                x: { grid: { color: gridColor }, ticks: { color: labelColor } },
+                y: { grid: { color: gridColor }, ticks: { color: labelColor } }
+            }
+        }
+    });
+</script>
+{% endblock %}

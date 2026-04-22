@@ -11,35 +11,27 @@
     color: #fff !important;
 }
 
-.nav-link {
+.navbar .navbar-nav .nav-link {
     position: relative;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, background-size 0.3s ease;
     margin: 0 10px; /* Mais espaçamento entre links */
     font-weight: 500;
     color: rgba(255, 255, 255, 0.7) !important; /* Cor base mais suave */
+    display: inline-block;
+    padding-bottom: 0.35rem;
+    text-decoration: none;
+    background-image: linear-gradient(var(--primary-color), var(--primary-color));
+    background-repeat: no-repeat;
+    background-position: 50% 100%;
+    background-size: 0 2px;
 }
 
 /* Efeito Neon e Underline para link ativo/hover */
-.nav-link.active, .nav-link:hover {
+.navbar .navbar-nav .nav-link.active,
+.navbar .navbar-nav .nav-link:hover {
     color: var(--primary-color) !important;
     text-shadow: 0 0 10px rgba(0, 210, 255, 0.4);
-}
-
-.nav-link::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: 0px; 
-    left: 50%;
-    background-color: var(--primary-color);
-    transition: all 0.3s ease;
-    box-shadow: 0 0 8px var(--primary-color);
-    transform: translateX(-50%);
-}
-
-.nav-link.active::after, .nav-link:hover::after {
-    width: 100%;
+    background-size: 100% 2px;
 }
 
 /* Botão Orçamento na Navbar */

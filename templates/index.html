@@ -1,4 +1,4 @@
-﻿{% extends "base.html" %}
+{% extends "base.html" %}
 
 {% block content %}
 <!-- Seção Hero (Home) -->
@@ -9,7 +9,7 @@
                 Transformamos Ideias em <span class="text-primary">Software Real</span>
             </h1>
             <p class="lead text-muted mb-5 mx-auto" style="max-width: 800px;">
-                Especialistas em Desenvolvimento Web, Sistemas ERP, Apps de Delivery e Automação de Processos (RPA).
+                Especialistas em Desenvolvimento Web, Sistemas ERP, Ciência de Dados (Análise e BI), Apps de Delivery e Automação de Processos (RPA).
                 Tecnologia de ponta para escalar o seu negócio.
             </p>
             
@@ -49,20 +49,21 @@
                 <h2 class="section-title text-light mb-4">Quem é a <span class="text-primary">Fuosteck</span>?</h2>
                 <p class="text-muted mb-4">
                     Somos um estúdio de desenvolvimento focado em entregar soluções robustas e escaláveis. 
-                    Não entregamos apenas código; entregamos eficiência operacional e novos canais de receita para sua empresa.
+                    Não entregamos apenas código; entregamos eficiência operacional, decisões guiadas por dados e novos canais de receita para sua empresa.
+                    Formação em Tecnologia em Ciência de Dados com foco em análise, indicadores e automação.
                 </p>
                 
                 <div class="row g-4 mb-4">
                     <div class="col-6">
                         <div class="d-flex align-items-center">
                             <i class="fas fa-check-circle text-success me-3 fa-2x"></i>
-                            <span class="text-light fw-bold">Fullstack Python & JS</span>
+                            <span class="text-light fw-bold">Python, SQL & Data Science</span>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="d-flex align-items-center">
                             <i class="fas fa-check-circle text-success me-3 fa-2x"></i>
-                            <span class="text-light fw-bold">Arquitetura Cloud</span>
+                            <span class="text-light fw-bold">Dashboards & BI</span>
                         </div>
                     </div>
                     <div class="col-6">
@@ -74,7 +75,7 @@
                     <div class="col-6">
                         <div class="d-flex align-items-center">
                             <i class="fas fa-check-circle text-success me-3 fa-2x"></i>
-                            <span class="text-light fw-bold">UI/UX Design</span>
+                            <span class="text-light fw-bold">Arquitetura Cloud</span>
                         </div>
                     </div>
                 </div>
@@ -137,16 +138,27 @@
                     <p class="text-muted small">Aplicativos Android/iOS e PWAs (Progressive Web Apps) modernos e rápidos.</p>
                 </div>
             </div>
+            
+            <!-- Service 5 -->
+            <div class="col-md-3 animate-on-scroll" style="transition-delay: 0.4s">
+                <div class="service-card">
+                    <div class="icon-box" style="color: var(--primary-color);">
+                        <i class="fas fa-chart-pie fa-2x"></i>
+                    </div>
+                    <h4 class="text-light h5">Ciência de Dados</h4>
+                    <p class="text-muted small">Análise exploratória, indicadores (KPIs), ETL, dashboards e automações orientadas por dados.</p>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- Seção Demos (Portfólio) -->
+<!-- Seção Projetos & Cases (Portfólio) -->
 <section id="demos" class="section-padding bg-darker" style="scroll-margin-top: 70px;">
     <div class="container">
         <div class="text-center mb-5 animate-on-scroll">
-            <h2 class="section-title text-light">Nossos <span class="text-primary">Demos Interativos</span></h2>
-            <p class="text-muted">Teste agora mesmo as soluções que desenvolvemos.</p>
+            <h2 class="section-title text-light">Projetos & <span class="text-primary">Cases</span></h2>
+            <p class="text-muted">Soluções reais: software, automação e análise de dados para gerar resultado.</p>
         </div>
 
         <div class="row g-4">
@@ -198,6 +210,104 @@
                     </div>
                     <p class="text-muted mb-4">Sistema de cardápio digital moderno com carrinho de compras e integração direta com WhatsApp para pedidos.</p>
                     <a href="{{ url_for('delivery.index') }}" class="btn btn-outline-warning w-100">Acessar Demo</a>
+                </div>
+            </div>
+
+            <!-- Data Science Card 1 -->
+            <div class="col-md-4 animate-on-scroll" id="ds-sales">
+                <div class="demo-card">
+                    <div class="icon-container text-info">
+                        <i class="fas fa-chart-column"></i>
+                    </div>
+                    <h3 class="h4 text-light">Análise de Vendas & KPIs</h3>
+                    <div class="stack-badges">
+                        <span class="stack-badge">Python</span>
+                        <span class="stack-badge">Pandas</span>
+                        <span class="stack-badge">SQL</span>
+                    </div>
+                    <p class="text-muted mb-3">Case de análise de dados com limpeza, consolidação e geração de indicadores para acompanhar receita, ticket médio e sazonalidade.</p>
+                    <a class="btn btn-outline-info w-100" href="{{ url_for('home.case_sales') }}">Ver Análise</a>
+                    <div class="border border-secondary rounded-3 p-3 bg-dark mt-3">
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <span class="badge bg-success">+18% Receita</span>
+                            <span class="badge bg-primary">Ticket Médio +9%</span>
+                            <span class="badge bg-warning text-dark">Sazonalidade</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-dark table-sm mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="border-secondary text-muted">Categoria</th>
+                                        <th class="border-secondary text-muted text-end">Participação</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border-secondary">Assinaturas</td>
+                                        <td class="border-secondary text-end">42%</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border-secondary">Serviços</td>
+                                        <td class="border-secondary text-end">33%</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border-secondary">Licenças</td>
+                                        <td class="border-secondary text-end">25%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <a href="#contato" class="btn btn-outline-primary w-100 mt-3">Quero um Dashboard</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Science Card 2 -->
+            <div class="col-md-4 animate-on-scroll" style="transition-delay: 0.1s" id="ds-churn">
+                <div class="demo-card">
+                    <div class="icon-container text-primary">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3 class="h4 text-light">Análise de Churn & Segmentação</h3>
+                    <div class="stack-badges">
+                        <span class="stack-badge">Python</span>
+                        <span class="stack-badge">Pandas</span>
+                        <span class="stack-badge">Modelagem</span>
+                    </div>
+                    <p class="text-muted mb-3">Estudo de retenção com segmentação de clientes, variáveis explicativas e recomendações para reduzir cancelamentos.</p>
+                    <a class="btn btn-outline-primary w-100" href="{{ url_for('home.case_churn') }}">Ver Análise</a>
+                    <div class="border border-secondary rounded-3 p-3 bg-dark mt-3">
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <span class="badge bg-danger">Churn 6.2%</span>
+                            <span class="badge bg-success">Ação: -1.5pp</span>
+                            <span class="badge bg-info text-dark">Segmentos</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-dark table-sm mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="border-secondary text-muted">Segmento</th>
+                                        <th class="border-secondary text-muted text-end">Risco</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border-secondary">Baixo uso (30 dias)</td>
+                                        <td class="border-secondary text-end">Alto</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border-secondary">Plano mensal</td>
+                                        <td class="border-secondary text-end">Médio</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border-secondary">Onboarding incompleto</td>
+                                        <td class="border-secondary text-end">Alto</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <a href="#contato" class="btn btn-outline-primary w-100 mt-3">Quero reduzir meu Churn</a>
+                    </div>
                 </div>
             </div>
             
