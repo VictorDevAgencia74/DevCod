@@ -58,10 +58,19 @@ body {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
-    border-radius: 8px; /* Cantos levemente arredondados */
-    padding: 0.6rem 1.5rem; /* Padding confortável */
-    font-weight: 600;
-    letter-spacing: 0.5px;
+    border-radius: 999px; /* Cantos bem arredondados para estilo moderno */
+    padding: 0.75rem 1.6rem; /* Padding confortável */
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    min-height: 3.4rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-lg {
+    padding: 0.95rem 1.8rem;
+    font-size: 1rem;
 }
 
 /* Botão Primário (Sólido) */
@@ -69,12 +78,12 @@ body {
     background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
     border: none;
     color: #fff;
-    box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3);
+    box-shadow: 0 6px 20px rgba(0, 210, 255, 0.25);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 210, 255, 0.5);
+    box-shadow: 0 10px 26px rgba(0, 210, 255, 0.45);
     color: #fff;
 }
 
@@ -82,14 +91,48 @@ body {
 .btn-outline-light {
     color: #fff;
     border: 2px solid rgba(255, 255, 255, 0.55);
-    background-color: rgba(255, 255, 255, 0.06);
+    background-color: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
 }
 
-.btn-outline-light:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+.btn-outline-light:hover,
+.btn-outline-light:focus {
+    background-color: rgba(255, 255, 255, 0.15);
     border-color: #fff;
     color: #fff;
     transform: translateY(-2px);
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    background-color: rgba(0, 210, 255, 0.12);
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+    background-color: var(--primary-color);
+    color: var(--darker-bg);
+    box-shadow: var(--primary-glow);
+    transform: translateY(-2px);
+}
+
+.btn-outline-success,
+.btn-outline-info,
+.btn-outline-warning,
+.btn-outline-danger,
+.btn-outline-secondary {
+    border-width: 2px;
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.btn-outline-success:hover,
+.btn-outline-info:hover,
+.btn-outline-warning:hover,
+.btn-outline-danger:hover,
+.btn-outline-secondary:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
 }
 
 /* Botão Outline Primary */
@@ -119,6 +162,70 @@ body {
 .btn-outline-warning {
     background-color: rgba(var(--bs-warning-rgb), 0.12);
     border-width: 2px;
+}
+
+/* Botões Demo CTA */
+.btn-demo {
+    border-radius: 999px;
+    padding: 0.95rem 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    min-height: 3.6rem;
+}
+
+.btn-demo:hover,
+.btn-demo:focus {
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.btn-demo-primary {
+    color: #fff;
+    background: linear-gradient(135deg, rgba(0, 210, 255, 0.95), rgba(58, 123, 213, 0.95));
+    border: none;
+    box-shadow: 0 10px 25px rgba(0, 210, 255, 0.2);
+}
+
+.btn-demo-success {
+    color: #111;
+    background: linear-gradient(135deg, rgba(46, 213, 115, 0.95), rgba(16, 185, 129, 0.95));
+    border: none;
+}
+
+.btn-demo-warning {
+    color: #111;
+    background: linear-gradient(135deg, rgba(255, 165, 2, 0.95), rgba(255, 203, 63, 0.95));
+    border: none;
+}
+
+.btn-demo-info {
+    color: #111;
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.95), rgba(6, 182, 212, 0.95));
+    border: none;
+}
+
+.btn-demo-danger {
+    color: #111;
+    background: linear-gradient(135deg, rgba(255, 71, 87, 0.95), rgba(255, 99, 132, 0.95));
+    border: none;
+}
+
+.btn-demo-alt {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.btn-demo-primary:hover,
+.btn-demo-success:hover,
+.btn-demo-warning:hover,
+.btn-demo-info:hover,
+.btn-demo-danger:hover,
+.btn-demo-alt:hover {
+    filter: saturate(1.1);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
 }
 
 .btn-outline-danger {
@@ -415,10 +522,95 @@ section:hover .section-title::after {
 
 /* Responsividade */
 @media (max-width: 768px) {
-    .hero-title {
-        font-size: 2.5rem;
+    .hero-section {
+        padding-top: 60px;
+        min-height: 85vh;
     }
-    
+
+    .hero-title {
+        font-size: 2.2rem;
+        line-height: 1.1;
+    }
+
+    .hero-copy {
+        font-size: 1rem;
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-buttons {
+        flex-direction: column !important;
+        align-items: stretch;
+    }
+
+    .hero-buttons .btn {
+        width: 100%;
+        min-width: 0;
+        padding-left: 1.2rem;
+        padding-right: 1.2rem;
+    }
+
+    .hero-scroll-down {
+        display: none;
+    }
+
+    .section-padding {
+        padding: 60px 0;
+    }
+
+    .bio-container,
+    .link-card,
+    .metric-card,
+    .testimonial-card,
+    .benefit-card,
+    .custom-accordion .accordion-button {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .link-card {
+        padding: 0.9rem 1rem;
+    }
+
+    .btn {
+        font-size: 0.95rem;
+    }
+
+    .demo-card {
+        padding: 1.5rem;
+        min-height: 380px;
+    }
+
+    .demo-card .stack-badges {
+        gap: 0.4rem;
+    }
+
+    .demo-card .table-responsive {
+        overflow-x: auto;
+    }
+
+    .demo-card .border {
+        padding: 0.5rem;
+    }
+
+    .card-body {
+        padding: 2rem 1.25rem;
+    }
+
+    .form-control {
+        border-radius: 16px;
+        padding: 1rem 1rem;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 0 0.2rem rgba(0, 210, 255, 0.18);
+    }
+
+    textarea.form-control {
+        min-height: 180px;
+    }
+
     .card:hover, .service-card:hover {
         transform: translateY(-5px) scale(1.01);
     }
@@ -810,6 +1002,10 @@ section:hover .section-title::after {
     overflow: hidden;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     height: 100%;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .demo-card::before {
@@ -864,6 +1060,28 @@ section:hover .section-title::after {
 .demo-card:hover .icon-container i {
     transform: scale(1.1);
     filter: drop-shadow(0 0 8px currentColor);
+}
+
+.demo-card .table-responsive {
+    overflow-x: auto;
+    margin-top: 1rem;
+}
+
+.demo-card .table-responsive table {
+    min-width: 320px;
+}
+
+.demo-card .btn {
+    margin-top: auto;
+}
+
+.demo-card .table-responsive::-webkit-scrollbar {
+    height: 6px;
+}
+
+.demo-card .table-responsive::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
 }
 
 /* Stack Badges */

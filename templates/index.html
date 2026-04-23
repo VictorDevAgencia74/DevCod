@@ -5,19 +5,19 @@
 <section id="home" class="hero-section text-center d-flex flex-column justify-content-center align-items-center" style="min-height: 100vh; padding-top: 80px; scroll-margin-top: 80px;">
     <div class="container position-relative z-1">
         <div class="animate-on-scroll">
-            <h1 class="display-3 fw-bold mb-4 text-light">
+            <h1 class="hero-title display-3 fw-bold mb-4 text-light">
                 Transformamos Ideias em <span class="text-primary">Software Real</span>
             </h1>
-            <p class="lead text-muted mb-5 mx-auto" style="max-width: 800px;">
+            <p class="lead text-muted mb-5 mx-auto hero-copy" style="max-width: 800px;">
                 Especialistas em Desenvolvimento Web, Sistemas ERP, Ciência de Dados (Análise e BI), Apps de Delivery e Automação de Processos (RPA).
                 Tecnologia de ponta para escalar o seu negócio.
             </p>
             
-            <div class="d-flex justify-content-center gap-3 mb-5">
-                <a href="#demos" class="btn btn-primary btn-lg rounded-pill px-5 shadow-lg">
+            <div class="d-flex flex-column flex-sm-row justify-content-center gap-3 gap-sm-4 mb-5 hero-buttons">
+                <a href="#demos" class="btn btn-primary btn-lg rounded-pill px-5 shadow-lg w-100 w-sm-auto">
                     <i class="fas fa-laptop-code me-2"></i>Ver Projetos
                 </a>
-                <a href="{{ url_for('home.landing') }}" class="btn btn-outline-light btn-lg rounded-pill px-5">
+                <a href="{{ url_for('home.landing') }}" class="btn btn-outline-light btn-lg rounded-pill px-5 w-100 w-sm-auto">
                     <i class="fas fa-rocket me-2"></i>Landing Page (Vendas)
                 </a>
             </div>
@@ -25,7 +25,7 @@
     </div>
     
     <!-- Scroll Down Indicator -->
-    <div class="position-absolute bottom-0 start-50 translate-middle-x mb-4 animate-on-scroll">
+    <div class="position-absolute bottom-0 start-50 translate-middle-x mb-4 animate-on-scroll hero-scroll-down">
         <a href="#sobre" class="text-light opacity-50 hover-opacity-100 transition-base">
             <i class="fas fa-chevron-down fa-2x animate-bounce"></i>
         </a>
@@ -175,7 +175,7 @@
                         <span class="stack-badge">Pandas</span>
                     </div>
                     <p class="text-muted mb-4">Bots inteligentes para automação de processos, extração de dados e tarefas repetitivas. Inclui dashboard de controle em tempo real.</p>
-                    <a href="{{ url_for('rpa.dashboard') }}" class="btn btn-outline-primary w-100">Acessar Demo</a>
+                    <a href="{{ url_for('rpa.dashboard') }}" class="btn btn-demo btn-demo-primary w-100">Acessar Demo</a>
                 </div>
             </div>
 
@@ -192,7 +192,7 @@
                         <span class="stack-badge">Chart.js</span>
                     </div>
                     <p class="text-muted mb-4">Dashboard administrativo completo para gestão de empresas, controle de estoque, financeiro e relatórios gerenciais.</p>
-                    <a href="{{ url_for('erp.index') }}" class="btn btn-outline-success w-100">Acessar Demo</a>
+                    <a href="{{ url_for('erp.index') }}" class="btn btn-demo btn-demo-success w-100">Acessar Demo</a>
                 </div>
             </div>
 
@@ -209,7 +209,58 @@
                         <span class="stack-badge">Mobile First</span>
                     </div>
                     <p class="text-muted mb-4">Sistema de cardápio digital moderno com carrinho de compras e integração direta com WhatsApp para pedidos.</p>
-                    <a href="{{ url_for('delivery.index') }}" class="btn btn-outline-warning w-100">Acessar Demo</a>
+                    <a href="{{ url_for('delivery.index') }}" class="btn btn-demo btn-demo-warning w-100">Acessar Demo</a>
+                </div>
+            </div>
+            
+            <!-- Booking Card -->
+            <div class="col-md-4 animate-on-scroll">
+                <div class="demo-card booking">
+                    <div class="icon-container text-info">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h3 class="h4 text-light">Agendamentos</h3>
+                    <div class="stack-badges">
+                        <span class="stack-badge">FullCalendar</span>
+                        <span class="stack-badge">Email API</span>
+                        <span class="stack-badge">Bootstrap 5</span>
+                    </div>
+                    <p class="text-muted mb-4">Sistema de reservas online para clínicas e consultórios com gestão visual de horários e notificações.</p>
+                    <a href="{{ url_for('booking.index') }}" class="btn btn-demo btn-demo-info w-100">Acessar Demo</a>
+                </div>
+            </div>
+
+            <!-- Real Estate Card -->
+            <div class="col-md-4 animate-on-scroll" style="transition-delay: 0.1s">
+                <div class="demo-card real-estate">
+                    <div class="icon-container text-danger">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h3 class="h4 text-light">Imobiliária</h3>
+                    <div class="stack-badges">
+                        <span class="stack-badge">Gallery JS</span>
+                        <span class="stack-badge">Filters</span>
+                        <span class="stack-badge">Maps API</span>
+                    </div>
+                    <p class="text-muted mb-4">Vitrine de imóveis premium com filtros avançados, galeria de fotos interativa e formulários de contato.</p>
+                    <a href="{{ url_for('real_estate.index') }}" class="btn btn-demo btn-demo-danger w-100">Acessar Demo</a>
+                </div>
+            </div>
+
+            <!-- EdTech Card -->
+            <div class="col-md-4 animate-on-scroll" style="transition-delay: 0.2s">
+                <div class="demo-card edtech">
+                    <div class="icon-container text-purple" style="color: #a855f7;">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="h4 text-light">Plataforma EdTech</h3>
+                    <div class="stack-badges">
+                        <span class="stack-badge">Video Player</span>
+                        <span class="stack-badge">Progress Tracking</span>
+                        <span class="stack-badge">Gamification</span>
+                    </div>
+                    <p class="text-muted mb-4">Área de membros para cursos online estilo Netflix com rastreamento de progresso e certificados.</p>
+                    <a href="{{ url_for('edtech.index') }}" class="btn btn-demo btn-demo-alt w-100">Acessar Demo</a>
                 </div>
             </div>
 
@@ -226,7 +277,7 @@
                         <span class="stack-badge">SQL</span>
                     </div>
                     <p class="text-muted mb-3">Case de análise de dados com limpeza, consolidação e geração de indicadores para acompanhar receita, ticket médio e sazonalidade.</p>
-                    <a class="btn btn-outline-info w-100" href="{{ url_for('home.case_sales') }}">Ver Análise</a>
+                    <a class="btn btn-demo btn-demo-info w-100" href="{{ url_for('home.case_sales') }}">Ver Análise</a>
                     <div class="border border-secondary rounded-3 p-3 bg-dark mt-3">
                         <div class="d-flex flex-wrap gap-2 mb-3">
                             <span class="badge bg-success">+18% Receita</span>
@@ -257,7 +308,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <a href="#contato" class="btn btn-outline-primary w-100 mt-3">Quero um Dashboard</a>
+                        <a href="#contato" class="btn btn-demo btn-demo-primary w-100 mt-3">Quero um Dashboard</a>
                     </div>
                 </div>
             </div>
@@ -275,7 +326,7 @@
                         <span class="stack-badge">Modelagem</span>
                     </div>
                     <p class="text-muted mb-3">Estudo de retenção com segmentação de clientes, variáveis explicativas e recomendações para reduzir cancelamentos.</p>
-                    <a class="btn btn-outline-primary w-100" href="{{ url_for('home.case_churn') }}">Ver Análise</a>
+                    <a class="btn btn-demo btn-demo-primary w-100" href="{{ url_for('home.case_churn') }}">Ver Análise</a>
                     <div class="border border-secondary rounded-3 p-3 bg-dark mt-3">
                         <div class="d-flex flex-wrap gap-2 mb-3">
                             <span class="badge bg-danger">Churn 6.2%</span>
@@ -306,59 +357,8 @@
                                 </tbody>
                             </table>
                         </div>
-                        <a href="#contato" class="btn btn-outline-primary w-100 mt-3">Quero reduzir meu Churn</a>
+                        <a href="#contato" class="btn btn-demo btn-demo-primary w-100 mt-3">Quero reduzir meu Churn</a>
                     </div>
-                </div>
-            </div>
-            
-            <!-- Booking Card -->
-            <div class="col-md-4 animate-on-scroll">
-                <div class="demo-card booking">
-                    <div class="icon-container text-info">
-                        <i class="fas fa-calendar-check"></i>
-                    </div>
-                    <h3 class="h4 text-light">Agendamentos</h3>
-                    <div class="stack-badges">
-                        <span class="stack-badge">FullCalendar</span>
-                        <span class="stack-badge">Email API</span>
-                        <span class="stack-badge">Bootstrap 5</span>
-                    </div>
-                    <p class="text-muted mb-4">Sistema de reservas online para clínicas e consultórios com gestão visual de horários e notificações.</p>
-                    <a href="{{ url_for('booking.index') }}" class="btn btn-outline-info w-100">Acessar Demo</a>
-                </div>
-            </div>
-
-            <!-- Real Estate Card -->
-            <div class="col-md-4 animate-on-scroll" style="transition-delay: 0.1s">
-                <div class="demo-card real-estate">
-                    <div class="icon-container text-danger">
-                        <i class="fas fa-building"></i>
-                    </div>
-                    <h3 class="h4 text-light">Imobiliária</h3>
-                    <div class="stack-badges">
-                        <span class="stack-badge">Gallery JS</span>
-                        <span class="stack-badge">Filters</span>
-                        <span class="stack-badge">Maps API</span>
-                    </div>
-                    <p class="text-muted mb-4">Vitrine de imóveis premium com filtros avançados, galeria de fotos interativa e formulários de contato.</p>
-                    <a href="{{ url_for('real_estate.index') }}" class="btn btn-outline-danger w-100">Acessar Demo</a>
-                </div>
-            </div>
-
-            <!-- EdTech Card -->
-            <div class="col-md-4 animate-on-scroll" style="transition-delay: 0.2s">
-                <div class="demo-card edtech">
-                    <div class="icon-container text-purple" style="color: #a855f7;">
-                        <i class="fas fa-graduation-cap"></i>
-                    </div>
-                    <h3 class="h4 text-light">Plataforma EdTech</h3>
-                    <div class="stack-badges">
-                        <span class="stack-badge">Video Player</span>
-                        <span class="stack-badge">Progress Tracking</span>
-                        <span class="stack-badge">Gamification</span>
-                    </div>
-                    <p class="text-muted mb-4">Área de membros para cursos online estilo Netflix com rastreamento de progresso e certificados.</p>
-                    <a href="{{ url_for('edtech.index') }}" class="btn btn-outline-light w-100" style="border-color: #a855f7; color: #a855f7;">Acessar Demo</a>
                 </div>
             </div>
         </div>

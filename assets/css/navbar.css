@@ -43,10 +43,45 @@
 
 /* Mobile Toggler */
 .navbar-toggler {
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 10px;
+    padding: 0.35rem 0.75rem;
     outline: none;
 }
 
 .navbar-toggler:focus {
     box-shadow: none;
 }
+
+@media (max-width: 768px) {
+    .navbar {
+        padding: 0.75rem 0.75rem 1rem;
+    }
+
+    .navbar .navbar-nav {
+        margin-top: 1rem;
+        background: rgba(15, 23, 42, 0.92);
+        border-radius: 16px;
+        padding: 1rem;
+    }
+
+    .navbar .navbar-nav .nav-link {
+        display: block;
+        margin: 0.35rem 0;
+        padding: 0.75rem 1rem;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.04);
+    }
+
+    .navbar .navbar-nav .nav-link.active,
+    .navbar .navbar-nav .nav-link:hover {
+        background: rgba(0, 210, 255, 0.12);
+        text-shadow: none;
+    }
+
+    .navbar .btn-outline-primary {
+        width: 100%;
+        margin-top: 1rem;
+    }
+}
+
