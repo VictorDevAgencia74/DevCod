@@ -382,15 +382,15 @@
                         <form id="mainContactForm">
                             <div class="mb-3">
                                 <label class="form-label text-light">Nome</label>
-                                <input type="text" class="form-control bg-darker text-light border-secondary" placeholder="Seu nome">
+                                <input type="text" name="nome" class="form-control bg-darker text-light border-secondary" placeholder="Seu nome" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label text-light">Email</label>
-                                <input type="email" class="form-control bg-darker text-light border-secondary" placeholder="seu@email.com">
+                                <input type="email" name="email" class="form-control bg-darker text-light border-secondary" placeholder="seu@email.com" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label text-light">Mensagem</label>
-                                <textarea class="form-control bg-darker text-light border-secondary" rows="5" placeholder="Conte sobre seu projeto..."></textarea>
+                                <textarea name="mensagem" class="form-control bg-darker text-light border-secondary" rows="5" placeholder="Conte sobre seu projeto..." required></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary w-100 py-3 fw-bold">Enviar Mensagem</button>
                         </form>
@@ -400,6 +400,24 @@
         </div>
     </div>
 </section>
+
+<!-- Modal de Agradecimento -->
+<div class="modal fade" id="thankYouModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary">
+            <div class="modal-body text-center p-5">
+                <div class="mb-4">
+                    <i class="fas fa-check-circle text-success fa-4x"></i>
+                </div>
+                <h3 class="text-light mb-3">Mensagem Recebida!</h3>
+                <p class="text-muted mb-4" id="thankYouMessage">Obrigado pelo contato. Vamos redirecionar você para o WhatsApp.</p>
+                <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal" onclick="proceedToWhatsapp()">
+                    <i class="fab fa-whatsapp me-2"></i>Abrir WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 
@@ -417,5 +435,44 @@
             }
         });
     });
+
+    // Envio de contato via WhatsApp usando a rota /send-message
+    let whatsappUrl = '';
+    const mainContactForm = document.getElementById('mainContactForm');
+    if (mainContactForm) {
+        mainContactForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+
+            fetch('/send-message', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.whatsapp_link) {
+                    whatsappUrl = data.whatsapp_link;
+                    document.getElementById('thankYouMessage').innerText = data.message || 'Obrigado pelo contato. Vamos redirecionar você para o WhatsApp.';
+
+                    const thankYouModal = new bootstrap.Modal(document.getElementById('thankYouModal'));
+                    thankYouModal.show();
+                    this.reset();
+                } else {
+                    alert('Não foi possível gerar o link do WhatsApp. Tente novamente mais tarde.');
+                }
+            })
+            .catch(() => {
+                whatsappUrl = 'https://wa.me/5573981747651?text=Olá, gostaria de mais informações.';
+                const thankYouModal = new bootstrap.Modal(document.getElementById('thankYouModal'));
+                thankYouModal.show();
+            });
+        });
+    }
+
+    function proceedToWhatsapp() {
+        if (whatsappUrl) {
+            window.open(whatsappUrl, '_blank');
+        }
+    }
 </script>
 {% endblock %}
