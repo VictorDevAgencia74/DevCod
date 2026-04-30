@@ -11,6 +11,7 @@
             <div>
                 <h1 class="display-5 fw-bold text-light mb-2">Análise de Vendas & KPIs</h1>
                 <p class="text-muted mb-0">Pipeline completo: dados → limpeza → métricas → insights → gráficos.</p>
+                <p class="text-muted small mt-2">Modelo de apresentação pronto para clientes, com recomendações comerciais claras e impacto mensurável.</p>
             </div>
             <div class="d-flex gap-2">
                 <a class="btn btn-outline-light" href="{{ url_for('home.index', _anchor='demos') }}">Voltar</a>
@@ -27,28 +28,28 @@
                             <div class="col-6">
                                 <div class="metric-card">
                                     <div class="metric-label">Receita (YTD)</div>
-                                    <div class="metric-value">R$ 4,82M</div>
-                                    <div class="metric-sub text-success">+18% vs. ano anterior</div>
+                                    <div class="metric-value">{{ analysis.summary.revenue_text }}</div>
+                                    <div class="metric-sub text-success">{{ analysis.summary.growth_text }}</div>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="metric-card">
                                     <div class="metric-label">Ticket Médio</div>
-                                    <div class="metric-value">R$ 189</div>
+                                    <div class="metric-value">{{ analysis.summary.ticket_text }}</div>
                                     <div class="metric-sub text-success">+9% no trimestre</div>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="metric-card">
                                     <div class="metric-label">Conversão</div>
-                                    <div class="metric-value">3,7%</div>
+                                    <div class="metric-value">{{ analysis.summary.conversion_text }}</div>
                                     <div class="metric-sub text-primary">Foco em canal</div>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="metric-card">
                                     <div class="metric-label">Sazonalidade</div>
-                                    <div class="metric-value">Q4</div>
+                                    <div class="metric-value">{{ analysis.summary.seasonality_text }}</div>
                                     <div class="metric-sub text-warning">Pico recorrente</div>
                                 </div>
                             </div>
@@ -58,10 +59,9 @@
 
                         <h3 class="h6 text-light mb-2">Principais Insights</h3>
                         <ul class="text-muted mb-0 ps-3">
-                            <li>Receita concentrada em Assinaturas e Serviços, com variação mensal previsível.</li>
-                            <li>Ticket médio aumenta com bundles e upsell em clientes recorrentes.</li>
-                            <li>Campanhas pagas têm maior conversão, mas CAC mais sensível ao período.</li>
-                            <li>Recomendação: priorizar retenção e expansão em base ativa (LTV).</li>
+                            {% for insight in analysis.insights %}
+                                <li>{{ insight }}</li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>
@@ -213,30 +213,14 @@ ORDER BY month;</code></pre>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {% for row in analysis.channel_table %}
                                     <tr>
-                                        <td class="border-secondary">Orgânico</td>
-                                        <td class="border-secondary text-end">R$ 1,92M</td>
-                                        <td class="border-secondary text-end">10.420</td>
-                                        <td class="border-secondary text-end">R$ 18</td>
+                                        <td class="border-secondary">{{ row.channel }}</td>
+                                        <td class="border-secondary text-end">{{ row.revenue }}</td>
+                                        <td class="border-secondary text-end">{{ row.orders }}</td>
+                                        <td class="border-secondary text-end">{{ row.cac }}</td>
                                     </tr>
-                                    <tr>
-                                        <td class="border-secondary">Pago</td>
-                                        <td class="border-secondary text-end">R$ 1,54M</td>
-                                        <td class="border-secondary text-end">6.380</td>
-                                        <td class="border-secondary text-end">R$ 39</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="border-secondary">Parcerias</td>
-                                        <td class="border-secondary text-end">R$ 0,88M</td>
-                                        <td class="border-secondary text-end">3.210</td>
-                                        <td class="border-secondary text-end">R$ 22</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="border-secondary">Upsell</td>
-                                        <td class="border-secondary text-end">R$ 0,48M</td>
-                                        <td class="border-secondary text-end">1.090</td>
-                                        <td class="border-secondary text-end">R$ 7</td>
-                                    </tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>
@@ -244,10 +228,15 @@ ORDER BY month;</code></pre>
                         <div class="mt-4 p-3 border border-secondary rounded-3 bg-dark">
                             <h3 class="h6 text-light mb-2">Recomendações</h3>
                             <ul class="text-muted mb-0 ps-3">
-                                <li>Otimizar campanhas pagas por janela (pré-Q4) e reduzir CAC em termos de busca.</li>
-                                <li>Bundles para elevar ticket médio sem sacrificar conversão.</li>
-                                <li>Automação de alertas: queda de conversão e anomalias de receita.</li>
+                                {% for recommendation in analysis.recommendations %}
+                                    <li>{{ recommendation }}</li>
+                                {% endfor %}
                             </ul>
+                        </div>
+                        <div class="mt-4 p-4 border border-primary rounded-3 bg-primary-dark">
+                            <h3 class="h6 text-light mb-2">Apresentação para o seu cliente</h3>
+                            <p class="text-muted mb-3">Este painel foi pensado para demonstrar resultados rápidos e explicar o valor de ações comerciais baseadas em dados.</p>
+                            <a href="{{ url_for('home.index', _anchor='contato') }}" class="btn btn-outline-light">Quero essa análise para meus clientes</a>
                         </div>
                     </div>
                 </div>
@@ -266,10 +255,10 @@ ORDER BY month;</code></pre>
     const success = "#22c55e";
     const warning = "#f59e0b";
 
-    const months = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
-    const revenue = [320, 345, 372, 360, 392, 410, 430, 462, 498, 520, 610, 712];
-    const orders = [820, 790, 860, 840, 910, 960, 1020, 1060, 1120, 1180, 1390, 1505];
-    const avgTicket = revenue.map((v, i) => Math.round((v * 1000) / orders[i]));
+    const months = {{ analysis.chart.months|tojson }};
+    const revenue = {{ analysis.chart.revenue|tojson }};
+    const orders = {{ analysis.chart.orders|tojson }};
+    const avgTicket = {{ analysis.chart.avg_ticket|tojson }};
 
     new Chart(document.getElementById("revenueChart"), {
         type: "line",
@@ -302,9 +291,9 @@ ORDER BY month;</code></pre>
     new Chart(document.getElementById("mixChart"), {
         type: "doughnut",
         data: {
-            labels: ["Assinaturas", "Serviços", "Licenças"],
+            labels: {{ analysis.chart.mix_labels|tojson }},
             datasets: [{
-                data: [42, 33, 25],
+                data: {{ analysis.chart.mix_values|tojson }},
                 backgroundColor: [cyan, blue, warning],
                 borderWidth: 0
             }]

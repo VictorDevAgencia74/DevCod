@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify
 from src.extensions import cache
+from src.services.data_science.sales_analysis_service import SalesAnalysisService
+from src.services.data_science.churn_analysis_service import ChurnAnalysisService
 import urllib.parse
 import os
 
@@ -17,11 +19,13 @@ def landing():
 
 @home_bp.route('/cases/vendas')
 def case_sales():
-    return render_template('case_sales.html')
+    analysis = SalesAnalysisService.get_sales_analysis()
+    return render_template('case_sales.html', analysis=analysis)
 
 @home_bp.route('/cases/churn')
 def case_churn():
-    return render_template('case_churn.html')
+    analysis = ChurnAnalysisService.get_churn_analysis()
+    return render_template('case_churn.html', analysis=analysis)
 
 @home_bp.route('/send-message', methods=['POST'])
 def send_message():

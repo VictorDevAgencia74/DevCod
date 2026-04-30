@@ -11,6 +11,7 @@
             <div>
                 <h1 class="display-5 fw-bold text-light mb-2">Análise de Churn & Segmentação</h1>
                 <p class="text-muted mb-0">Diagnóstico de retenção: coortes, variáveis de risco, segmentos e plano de ação.</p>
+                <p class="text-muted small mt-2">Versão de análise pronta para apresentação a gestores e clientes, com foco em ações de retenção que geram valor imediato.</p>
             </div>
             <div class="d-flex gap-2">
                 <a class="btn btn-outline-light" href="{{ url_for('home.index', _anchor='demos') }}">Voltar</a>
@@ -27,28 +28,28 @@
                             <div class="col-6">
                                 <div class="metric-card">
                                     <div class="metric-label">Churn Mensal</div>
-                                    <div class="metric-value">6,2%</div>
+                                    <div class="metric-value">{{ analysis.summary.churn_rate }}</div>
                                     <div class="metric-sub text-danger">acima do alvo</div>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="metric-card">
                                     <div class="metric-label">Meta (Ação)</div>
-                                    <div class="metric-value">4,7%</div>
+                                    <div class="metric-value">{{ analysis.summary.target_rate }}</div>
                                     <div class="metric-sub text-success">-1,5pp</div>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="metric-card">
                                     <div class="metric-label">Ativação 7d</div>
-                                    <div class="metric-value">58%</div>
+                                    <div class="metric-value">{{ analysis.summary.activation }}</div>
                                     <div class="metric-sub text-primary">onboarding</div>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="metric-card">
                                     <div class="metric-label">NPS</div>
-                                    <div class="metric-value">41</div>
+                                    <div class="metric-value">{{ analysis.summary.nps }}</div>
                                     <div class="metric-sub text-warning">melhorável</div>
                                 </div>
                             </div>
@@ -58,10 +59,9 @@
 
                         <h3 class="h6 text-light mb-2">Hipóteses de Causa</h3>
                         <ul class="text-muted mb-0 ps-3">
-                            <li>Baixo uso nas primeiras 2 semanas aumenta risco de churn.</li>
-                            <li>Planos mensais cancelam mais; foco em incentivo anual.</li>
-                            <li>Onboarding incompleto correlaciona com abandono precoce.</li>
-                            <li>Suporte reativo; falta de alertas e playbooks.</li>
+                            {% for hypothesis in analysis.hypotheses %}
+                                <li>{{ hypothesis }}</li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>
@@ -164,22 +164,12 @@ auc = roc_auc_score(y_test, proba)</code></pre>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {% for metric in analysis.model_metrics %}
                                     <tr>
-                                        <td class="border-secondary">AUC (ROC)</td>
-                                        <td class="border-secondary text-end">0,84</td>
+                                        <td class="border-secondary">{{ metric.label }}</td>
+                                        <td class="border-secondary text-end">{{ metric.value }}</td>
                                     </tr>
-                                    <tr>
-                                        <td class="border-secondary">Precision (Top 20%)</td>
-                                        <td class="border-secondary text-end">0,62</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="border-secondary">Recall (Top 20%)</td>
-                                        <td class="border-secondary text-end">0,55</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="border-secondary">Lift (Top 20%)</td>
-                                        <td class="border-secondary text-end">2,3x</td>
-                                    </tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>
@@ -231,6 +221,11 @@ auc = roc_auc_score(y_test, proba)</code></pre>
                                 </div>
                             </div>
                         </div>
+                        <div class="mt-4 p-4 border border-primary rounded-3 bg-primary-dark">
+                            <h3 class="h6 text-light mb-2">Material pronto para clientes</h3>
+                            <p class="text-muted mb-3">Use essa análise para demonstrar como a redução de churn impacta diretamente na receita e no LTV do cliente.</p>
+                            <a href="{{ url_for('home.index', _anchor='contato') }}" class="btn btn-outline-light">Solicitar proposta de retenção</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -249,30 +244,22 @@ auc = roc_auc_score(y_test, proba)</code></pre>
     const warning = "#f59e0b";
     const success = "#22c55e";
 
+    const cohortLabels = {{ analysis.chart.cohort_labels|tojson }};
+    const cohortData = {{ analysis.chart.cohorts|tojson }};
+
     new Chart(document.getElementById("cohortChart"), {
         type: "line",
         data: {
-            labels: ["M0","M1","M2","M3","M4","M5"],
-            datasets: [
-                {
-                    label: "Coorte Jan",
-                    data: [0, 5.5, 6.8, 7.4, 7.9, 8.2],
-                    borderColor: cyan,
-                    backgroundColor: "rgba(0, 210, 255, 0.12)",
-                    tension: 0.35,
-                    fill: true,
-                    pointRadius: 3
-                },
-                {
-                    label: "Coorte Fev",
-                    data: [0, 4.8, 5.9, 6.6, 7.0, 7.3],
-                    borderColor: blue,
-                    backgroundColor: "rgba(58, 123, 213, 0.10)",
-                    tension: 0.35,
-                    fill: true,
-                    pointRadius: 3
-                }
-            ]
+            labels: cohortLabels,
+            datasets: cohortData.map((item, index) => ({
+                label: item.label,
+                data: item.data,
+                borderColor: index === 0 ? cyan : blue,
+                backgroundColor: index === 0 ? "rgba(0, 210, 255, 0.12)" : "rgba(58, 123, 213, 0.10)",
+                tension: 0.35,
+                fill: true,
+                pointRadius: 3
+            }))
         },
         options: {
             responsive: true,
@@ -287,10 +274,10 @@ auc = roc_auc_score(y_test, proba)</code></pre>
     new Chart(document.getElementById("segmentRiskChart"), {
         type: "bar",
         data: {
-            labels: ["Baixo uso 30d", "Plano mensal", "Onboarding incompleto", "Suporte alto"],
+            labels: {{ analysis.chart.segment_labels|tojson }},
             datasets: [{
                 label: "Risco relativo",
-                data: [2.6, 1.8, 2.2, 1.4],
+                data: {{ analysis.chart.segment_risk|tojson }},
                 backgroundColor: [danger, warning, cyan, success]
             }]
         },
@@ -306,10 +293,10 @@ auc = roc_auc_score(y_test, proba)</code></pre>
     new Chart(document.getElementById("featureChart"), {
         type: "bar",
         data: {
-            labels: ["Inactive 30d", "Onboarding", "Plano mensal", "Tenure"],
+            labels: {{ analysis.chart.feature_labels|tojson }},
             datasets: [{
                 label: "Importância (normalizada)",
-                data: [0.42, 0.28, 0.20, 0.10],
+                data: {{ analysis.chart.feature_importance|tojson }},
                 backgroundColor: "rgba(0, 210, 255, 0.35)"
             }]
         },
